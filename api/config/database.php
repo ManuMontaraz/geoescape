@@ -20,7 +20,7 @@ try {
 }
 
 // CORS headers
-$domain = $env['DOMAIN'] ?? 'scape.manumontaraz.es';
+$domain = $env['DOMAIN'] ?? 'escape.manumontaraz.es';
 header("Access-Control-Allow-Origin: https://{$domain}");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");

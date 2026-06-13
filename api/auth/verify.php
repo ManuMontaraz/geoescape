@@ -34,7 +34,9 @@ if (empty($token)) {
     }
 }
 
-$domain = 'scape.manumontaraz.es';
+require_once __DIR__ . '/../config/env.php';
+$env = loadEnv(__DIR__ . '/../.env');
+$domain = $env['DOMAIN'] ?? 'escape.manumontaraz.es';
 $baseUrl = "https://{$domain}";
 
 // Set colors based on state

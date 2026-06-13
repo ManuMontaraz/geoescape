@@ -66,7 +66,8 @@ require_once __DIR__ . '/../lib/PHPMailer/SMTP.php';
 require_once __DIR__ . '/../lib/PHPMailer/Exception.php';
 
 $mail = new PHPMailer\PHPMailer\PHPMailer(true);
-$domain = $env['DOMAIN'] ?? 'scape.manumontaraz.es';
+$mail->CharSet = 'UTF-8';
+$domain = $env['DOMAIN'] ?? 'escape.manumontaraz.es';
 
 // Generate verification link
 $verifyLink = "https://{$domain}/api/auth/verify.php?token=" . $verificationToken;

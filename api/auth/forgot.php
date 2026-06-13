@@ -33,7 +33,7 @@ if (!$user) {
 
 // Generate reset token
 $token = bin2hex(random_bytes(32));
-$expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour'));
+$expiresAt = gmdate('Y-m-d H:i:s', strtotime('+1 hour'));
 
 // Store token
 $stmt = $pdo->prepare("INSERT INTO password_resets (user_id, token, expires_at) VALUES (?, ?, ?)");
@@ -46,7 +46,7 @@ require_once __DIR__ . '/../lib/PHPMailer/PHPMailer.php';
 require_once __DIR__ . '/../lib/PHPMailer/SMTP.php';
 require_once __DIR__ . '/../lib/PHPMailer/Exception.php';
 
-$domain = $env['DOMAIN'] ?? 'scape.manumontaraz.es';
+$domain = $env['DOMAIN'] ?? 'escape.manumontaraz.es';
 $resetLink = "https://{$domain}/api/auth/reset.php?token=" . $token;
 
 $emailBody = <<<HTML
@@ -82,6 +82,7 @@ HTML;
 
 try {
     $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+    $mail->CharSet = 'UTF-8';
     $mail->isSMTP();
     $mail->Host = $env['SMTP_HOST'];
     $mail->SMTPAuth = true;
