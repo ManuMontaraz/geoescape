@@ -1,0 +1,48 @@
+# Environment variables and secrets
+.env
+api/.env
+
+# Database dumps
+*.sql
+*.sql.gz
+
+# Logs
+*.log
+error_log
+
+# Local development
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+
+# Session data (if stored locally)
+sessions/
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+tmp/
+temp/
+
+# Coverage reports
+coverage/
+
+# Config files that might contain secrets
+config.php
+session.php.bak

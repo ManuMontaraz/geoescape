@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoEscape - Editor de Campañas</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <style>
+    #editor-app { display: flex; flex-direction: column; height: 100vh; }
+    #editor-toolbar {
+      display: flex; gap: 0.5rem; padding: 0.5rem; background: var(--bg-panel); border-bottom: 2px solid var(--accent); align-items: center; flex-wrap: wrap;
+    }
+    #editor-toolbar h2 { color: var(--accent); margin: 0; font-size: 1.1rem; margin-right: 1rem; }
+    #editor-main { display: flex; flex: 1; overflow: hidden; }
+    #editor-sidebar {
+      width: 280px; background: var(--bg-panel); border-right: 2px solid var(--accent); display: flex; flex-direction: column; overflow-y: auto;
+    }
+    #editor-map-wrap { flex: 1; position: relative; }
+    #editor-map { width: 100%; height: 100%; }
+    #editor-form {
+      width: 320px; background: var(--bg-panel); border-left: 2px solid var(--accent); padding: 1rem; overflow-y: auto;
+    }
+    .loc-item {
+      padding: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    }
+    .loc-item:hover, .loc-item.active { background: rgba(233,69,96,0.2); }
+    .loc-item small { color: var(--text-muted); font-size: 0.75rem; }
+    .editor-group { margin-bottom: 1rem; }
+    .editor-group label { display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.3rem; }
+    .editor-group input, .editor-group textarea, .editor-group select {
+      width: 100%; padding: 0.4rem; background: #000; color: var(--text); border: 1px solid var(--accent); border-radius: 4px; font-size: 0.9rem;
+    }
+    .editor-group textarea { min-height: 60px; resize: vertical; }
+    .editor-group input[type="checkbox"] { width: auto; }
+    .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; border-radius: 4px; border: none; cursor: pointer; }
+    .condition-row {
+      display: flex;
+      gap: 0.3rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .condition-row select,
+    .condition-row input[type="text"] {
+      padding: 0.4rem;
+      background: #000;
+      color: var(--text);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      flex: 1;
+      min-width: 60px;
+    }
+    .condition-row .cond-type {
+      flex: 0 0 auto;
+      min-width: 100px;
+    }
+    .condition-row .cond-var-wrapper {
+      display: flex;
+      gap: 0.3rem;
+      flex: 1;
+    }
+    .condition-row .cond-var-wrapper input {
+      flex: 1;
+    }
+    .condition-row .btn-danger {
+      flex: 0 0 auto;
+      padding: 0.2rem 0.4rem;
+    }
+    .btn-danger { background: #c0392b; color: #fff; }
+    .btn-add { background: #27ae60; color: #fff; }
+    .mobile-only { display: none !important; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       RESPONSIVE EDITOR: slide-in sidebars for mobile/tablet
+       ═══════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .mobile-only { display: inline-flex !important; }
+      #editor-main { position: relative; }
+      #editor-sidebar, #editor-form {
+        position: fixed;
+        top: calc(2.5rem + 1rem); /* toolbar height approx */
+        bottom: 0;
+        width: 85%;
+        max-width: 320px;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+        border: none;
+      }
+      #editor-sidebar { left: 0; transform: translateX(-100%); border-right: 2px solid var(--accent); }
+      #editor-form { right: 0; transform: translateX(100%); border-left: 2px solid var(--accent); }
+      #editor-sidebar.open { transform: translateX(0); }
+      #editor-form.open { transform: translateX(0); }
+      #editor-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      #editor-overlay.visible { opacity: 1; pointer-events: auto; }
+      #editor-map-wrap { position: absolute; inset: 0; z-index: 1; }
+      #editor-map { width: 100%; height: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Auth Gate: block editor if not logged in -->
+  <div id="auth-gate" style="position:fixed;inset:0;background:var(--bg-dark);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;">
+    <div class="gps-spinner" style="width:48px;height:48px;"></div>
+    <p style="color:var(--text-muted);">Verificando sesión...</p>
+  </div>
+
+  <div id="editor-app" style="display:none;">
+    <div id="editor-toolbar">
+      <h2>🛠️ Editor GeoEscape</h2>
+      <button class="btn btn-sm btn-add" onclick="editor.newCampaign()">📄 Nuevo</button>
+      <button class="btn btn-sm btn-secondary" onclick="document.getElementById('importFile').click()">📂 Importar JSON</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="editor.importFile(event)">
+      <button class="btn btn-sm btn-primary" onclick="editor.exportJSON()">💾 Exportar JSON</button>
+      <button class="btn btn-sm btn-primary" style="background:#3498db;" onclick="editor.uploadCampaign()">☁️ Subir</button>
+      <button class="btn btn-sm btn-primary" style="background:#1abc9c;" onclick="editor.showMyCampaigns()">📥 Mis campañas</button>
+      <button class="btn btn-sm btn-primary" style="background:#9b59b6;" onclick="editor.testCampaign()">▶️ Probar Campaña</button>
+
+      <button class="btn btn-sm btn-secondary mobile-only" id="btn-toggle-sidebar" onclick="editor.toggleSidebar()">☰</button>
+      <button class="btn btn-sm btn-secondary mobile-only" id="btn-toggle-form" onclick="editor.toggleFormPanel()">✎</button>
+      <button class="btn btn-sm btn-secondary" onclick="window.location.href='index.html'">🏠 Volver al Inicio</button>
+    </div>
+    <div id="editor-main">
+      <div id="editor-sidebar">
+        <div id="editor-tabs" style="display:flex;background:rgba(0,0,0,0.3);border-bottom:1px solid var(--accent);">
+          <button class="editor-tab active" onclick="editor.setPanel('locations')" data-panel="locations">Ubicaciones</button>
+          <button class="editor-tab" onclick="editor.setPanel('items')" data-panel="items">Items</button>
+          <button class="editor-tab" onclick="editor.setPanel('npcs')" data-panel="npcs">NPCs</button>
+          <button class="editor-tab" onclick="editor.setPanel('events')" data-panel="events">Eventos</button>
+          <button class="editor-tab" onclick="editor.setPanel('config')" data-panel="config">Config</button>
+        </div>
+        <div style="padding:0.5rem;background:rgba(0,0,0,0.3);display:flex;justify-content:space-between;align-items:center;">
+          <strong id="sidebar-title">Ubicaciones</strong>
+          <button class="btn btn-sm btn-add" id="sidebar-add-btn" onclick="editor.addLocation()">+ Añadir</button>
+        </div>
+        <div id="loc-list"></div>
+      </div>
+      <div id="editor-map-wrap">
+        <div id="editor-map"></div>
+      </div>
+      <div id="editor-form">
+        <p style="color:var(--text-muted);text-align:center;margin-top:2rem;">Selecciona un elemento del sidebar para editarlo, o usa las pestañas para navegar entre secciones.</p>
+      </div>
+    </div>
+    <div id="editor-overlay" onclick="editor.closeAllPanels()"></div>
+  </div>
+
+  <!-- Modal for My Campaigns / Cloud Lists -->
+  <div id="cloud-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:2000;align-items:center;justify-content:center;">
+    <div style="background:var(--bg-panel);border:2px solid var(--accent);border-radius:8px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;padding:1.5rem;position:relative;">
+      <button onclick="document.getElementById('cloud-modal').style.display='none'" style="position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;">×</button>
+      <h3 id="cloud-modal-title" style="color:var(--accent);margin-bottom:1rem;">Mis Campañas</h3>
+      <div id="cloud-modal-content"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="js/engine/assetResolver.js"></script>
+  <script src="js/ui/components.js"></script>
+  <script>
+    (async function() {
+      try {
+        // Check login
+        const res = await fetch('api/user/profile.php', { credentials: 'same-origin' });
+        const data = await res.json();
+        if (!data.success) {
+          window.location.href = 'index.html';
+          return;
+        }
+        window._currentUsername = data.user.username || 'Anónimo';
+        
+        // Check campaign permissions if loading from localStorage
+        const savedJson = localStorage.getItem('ge_campaign_json');
+        if (savedJson) {
+          const cloudUuid = localStorage.getItem('ge_cloud_uuid');
+          if (cloudUuid) {
+            const ownerRes = await fetch('api/campaigns/check-owner.php?uuid=' + encodeURIComponent(cloudUuid), { credentials: 'same-origin' });
+            const ownerData = await ownerRes.json();
+            if (ownerData.success && !ownerData.isOwner && !ownerData.isPublic) {
+              // Private campaign and not owner, redirect to home
+              window.location.href = 'index.html';
+              return;
+            }
+          }
+        }
+        
+        // User is logged in (and has permission if loading a campaign), show editor and load editor.js
+        document.getElementById('auth-gate').style.display = 'none';
+        document.getElementById('editor-app').style.display = 'flex';
+        const script = document.createElement('script');
+        script.src = 'js/editor/editor.js';
+        document.body.appendChild(script);
+      } catch (e) {
+        window.location.href = 'index.html';
+      }
+    })();
+  </script>
+</body>
+</html>

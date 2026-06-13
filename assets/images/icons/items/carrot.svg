@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Sombra -->
+  <ellipse cx="32" cy="56" rx="10" ry="3" fill="#000" opacity="0.15"/>
+  <!-- Hojas (parte trasera) -->
+  <path d="M 32 18 Q 22 8 18 14 Q 24 16 32 18" fill="#27ae60" stroke="#333" stroke-width="1"/>
+  <path d="M 32 18 Q 42 8 46 14 Q 40 16 32 18" fill="#2ecc71" stroke="#333" stroke-width="1"/>
+  <path d="M 32 18 Q 32 6 32 12" fill="#229954" stroke="#333" stroke-width="1"/>
+  <!-- Tallo -->
+  <rect x="30" y="16" width="4" height="6" rx="1" fill="#7dcea0" stroke="#333" stroke-width="1"/>
+  <!-- Cuerpo de la zanahoria -->
+  <path d="M 26 22 L 38 22 L 32 48 Z" fill="#e67e22" stroke="#333" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Líneas de textura en la zanahoria -->
+  <path d="M 28 26 L 36 26" stroke="#d35400" stroke-width="1" fill="none"/>
+  <path d="M 29 30 L 35 30" stroke="#d35400" stroke-width="1" fill="none"/>
+  <path d="M 30 34 L 34 34" stroke="#d35400" stroke-width="1" fill="none"/>
+  <path d="M 31 38 L 33 38" stroke="#d35400" stroke-width="1" fill="none"/>
+  <!-- Brillo lateral -->
+  <path d="M 28 24 Q 30 32 31 44" stroke="#f5b041" stroke-width="1.5" fill="none" opacity="0.7"/>
+  <!-- Punta redondeada -->
+  <ellipse cx="32" cy="48" rx="6" ry="2" fill="#e67e22" stroke="#333" stroke-width="1"/>
+</svg>

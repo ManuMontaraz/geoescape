@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Shadow -->
+  <ellipse cx="32" cy="58" rx="18" ry="4" fill="#111" opacity="0.25" stroke="none"/>
+
+  <!-- Mud walls -->
+  <rect x="16" y="30" width="32" height="20" rx="2" fill="#C4A484" stroke="#333" stroke-width="1.5"/>
+  <!-- Mud texture lines -->
+  <line x1="16" y1="35" x2="48" y2="35" stroke="#A0845C" stroke-width="0.8"/>
+  <line x1="16" y1="40" x2="48" y2="40" stroke="#A0845C" stroke-width="0.8"/>
+  <line x1="16" y1="45" x2="48" y2="45" stroke="#A0845C" stroke-width="0.8"/>
+
+  <!-- Thatched roof (straw) -->
+  <path d="M 8 32 Q 32 8 56 32 L 52 34 Q 32 14 12 34 Z" fill="#D4A017" stroke="#333" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Straw texture -->
+  <line x1="14" y1="26" x2="18" y2="22" stroke="#B8860B" stroke-width="0.6"/>
+  <line x1="22" y1="22" x2="26" y2="18" stroke="#B8860B" stroke-width="0.6"/>
+  <line x1="30" y1="18" x2="34" y2="16" stroke="#B8860B" stroke-width="0.6"/>
+  <line x1="38" y1="18" x2="42" y2="22" stroke="#B8860B" stroke-width="0.6"/>
+  <line x1="46" y1="22" x2="50" y2="26" stroke="#B8860B" stroke-width="0.6"/>
+
+  <!-- Door -->
+  <rect x="28" y="38" width="8" height="12" rx="1" fill="#5C3A1E" stroke="#333" stroke-width="1.2"/>
+  <circle cx="34" cy="44" r="0.8" fill="#f1c40f" stroke="#333" stroke-width="0.8"/>
+
+  <!-- Small round window -->
+  <circle cx="22" cy="38" r="3" fill="#87CEEB" stroke="#333" stroke-width="1"/>
+  <line x1="22" y1="35" x2="22" y2="41" stroke="#333" stroke-width="0.8"/>
+  <line x1="19" y1="38" x2="25" y2="38" stroke="#333" stroke-width="0.8"/>
+
+  <!-- Grass base -->
+  <path d="M 12 52 Q 14 46 16 52" stroke="#27ae60" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M 46 52 Q 48 46 50 52" stroke="#27ae60" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>

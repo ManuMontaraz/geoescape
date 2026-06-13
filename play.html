@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>GeoEscape - Cargando campaña...</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      background: var(--bg-dark);
+      color: var(--text);
+      font-family: sans-serif;
+    }
+    .loading-box {
+      text-align: center;
+      padding: 2rem;
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      background: var(--bg-panel);
+      max-width: 400px;
+      width: 90%;
+    }
+    .loading-box h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .loading-box p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.1);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .error-box {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      background: var(--bg-panel);
+      max-width: 400px;
+      width: 90%;
+    }
+    .error-box h2 {
+      color: #e74c3c;
+      margin-bottom: 1rem;
+    }
+    .error-box p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+    .error-box a {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div id="loading-box" class="loading-box">
+    <div class="spinner"></div>
+    <h2>🎮 Cargando campaña...</h2>
+    <p>Descargando datos de la nube y preparando la experiencia.</p>
+  </div>
+
+  <div id="error-box" class="error-box">
+    <h2>❌ Error</h2>
+    <p id="error-msg">No se pudo cargar la campaña.</p>
+    <a href="index.html">🏠 Volver al inicio</a>
+  </div>
+
+  <script>
+    (async function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const uuid = urlParams.get('uuid');
+
+      if (!uuid) {
+        showError('No se proporcionó un UUID de campaña.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`api/campaigns/load.php?uuid=${encodeURIComponent(uuid)}`);
+        const data = await res.json();
+
+        if (!data.success || !data.campaign) {
+          showError(data.error || 'Campaña no encontrada.');
+          return;
+        }
+
+        const campaign = JSON.parse(data.campaign.campaign_json);
+
+        // Store in localStorage
+        localStorage.setItem('ge_campaign_json', data.campaign.campaign_json);
+        localStorage.setItem('ge_current_campaign', 'cloud_' + uuid);
+        localStorage.setItem('ge_saved_campaign', campaign.campaign_id);
+        localStorage.setItem('ge_cloud_uuid', uuid);
+        localStorage.setItem('ge_campaign_is_public', data.campaign.is_public ? '1' : '0');
+
+        // Redirect to game
+        window.location.href = 'game.html';
+      } catch (e) {
+        showError('Error de conexión: ' + e.message);
+      }
+    })();
+
+    function showError(msg) {
+      document.getElementById('loading-box').style.display = 'none';
+      document.getElementById('error-box').style.display = 'block';
+      document.getElementById('error-msg').textContent = msg;
+    }
+  </script>
+</body>
+</html>

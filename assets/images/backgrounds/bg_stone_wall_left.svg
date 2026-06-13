@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <!-- Suelo de piedra (70% derecha = x:120 a 400) -->
+  <rect x="120" y="0" width="280" height="300" fill="#7f8c8d"/>
+  <!-- Losetas suelo -->
+  <g stroke="#555" stroke-width="2" fill="#95a5a6">
+    <rect x="120" y="0" width="80" height="75" fill="#95a5a6" stroke="#555"/>
+    <rect x="200" y="0" width="100" height="75" fill="#7f8c8d" stroke="#555"/>
+    <rect x="300" y="0" width="100" height="75" fill="#95a5a6" stroke="#555"/>
+    <rect x="120" y="75" width="120" height="75" fill="#7f8c8d" stroke="#555"/>
+    <rect x="240" y="75" width="80" height="75" fill="#95a5a6" stroke="#555"/>
+    <rect x="320" y="75" width="80" height="75" fill="#7f8c8d" stroke="#555"/>
+    <rect x="120" y="150" width="90" height="75" fill="#95a5a6" stroke="#555"/>
+    <rect x="210" y="150" width="110" height="75" fill="#7f8c8d" stroke="#555"/>
+    <rect x="320" y="150" width="80" height="75" fill="#95a5a6" stroke="#555"/>
+    <rect x="120" y="225" width="100" height="75" fill="#7f8c8d" stroke="#555"/>
+    <rect x="220" y="225" width="100" height="75" fill="#95a5a6" stroke="#555"/>
+    <rect x="320" y="225" width="80" height="75" fill="#7f8c8d" stroke="#555"/>
+  </g>
+  <!-- Grietas -->
+  <path d="M 160 80 L 165 100 L 162 120" stroke="#444" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M 250 150 L 255 170 L 252 190" stroke="#444" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M 320 240 L 325 260 L 322 280" stroke="#444" stroke-width="1" fill="none" opacity="0.5"/>
+  <!-- Musgo -->
+  <ellipse cx="380" cy="20" rx="10" ry="7" fill="#27ae60" opacity="0.3"/>
+  <ellipse cx="350" cy="280" rx="12" ry="8" fill="#27ae60" opacity="0.3"/>
+
+  <!-- Pared de piedra (30% izquierda = x:0 a 120) -->
+  <rect x="0" y="0" width="120" height="300" fill="#5d4037"/>
+  <!-- Bloques piedra -->
+  <g stroke="#3e2723" stroke-width="2">
+    <rect x="0" y="0" width="60" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="60" y="0" width="60" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="40" width="40" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="40" y="40" width="50" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="90" y="40" width="30" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="80" width="55" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="55" y="80" width="65" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="120" width="60" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="60" y="120" width="60" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="0" y="160" width="50" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="50" y="160" width="70" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="200" width="65" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="65" y="200" width="55" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="0" y="240" width="45" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="45" y="240" width="75" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="280" width="60" height="20" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="60" y="280" width="60" height="20" fill="#7f8c8d" stroke="#3e2723"/>
+  </g>
+  <!-- Línea divisoria vertical -->
+  <line x1="120" y1="0" x2="120" y2="300" stroke="#222" stroke-width="3"/>
+</svg>

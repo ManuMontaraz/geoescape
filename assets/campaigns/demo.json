@@ -1,0 +1,395 @@
+{
+  "schema_version": "1.0",
+  "campaign_id": "demo_escape_celda",
+  "metadata": {
+    "title": "La Cámara del Alquimista",
+    "description": "Una demostración de GeoEscape con GPS, minijuegos cryptex y NPCs en el mapa.",
+    "author": "GeoEscape Team",
+    "version": "2.0.0",
+    "language": "es",
+    "difficulty": "easy",
+    "estimated_minutes": 15,
+    "tags": ["demo", "tutorial", "cryptex"],
+    "starting_location_id": "loc_tutorial"
+  },
+  "global_vars": {
+    "mirada_bajo_alfombra": {"type": "boolean", "default": false},
+    "cogio_moneda": {"type": "boolean", "default": false},
+    "hablado_raton": {"type": "boolean", "default": false},
+    "tutorial_visto": {"type": "boolean", "default": false},
+    "cryptex_resuelto": {"type": "boolean", "default": false}
+  },
+  "inventory_rules": {
+    "max_slots": 8,
+    "combinations": []
+  },
+  "locations": [
+    {
+      "id": "loc_tutorial",
+      "name": "Claro del Bosque",
+      "description": "Un claro tranquilo rodeado de árboles altos. Algo terrible pasó aquí.",
+      "color": "#27ae60",
+      "icon": "campo",
+      "background_type": "grass_floor",
+      "gps": {
+        "type": "relative",
+        "bearing_degrees": 0,
+        "distance_meters": 0,
+        "radius_meters": 30
+      },
+      "on_enter": [
+        {"type": "text", "value": "Despiertas con un dolor de cabeza atroz. Estás en un claro del bosque. No recuerdas cómo llegaste aquí."},
+        {"type": "text", "value": "A tu alrededor hay una mochila rota, huellas en el suelo y un cartel roto."}
+      ],
+      "clickable_areas": [
+        {
+          "id": "Mochila",
+          "shape": "rect",
+          "coords": {"x": 150, "y": 220, "w": 80, "h": 50},
+          "on_click": {
+            "actions": [
+              {"type": "text", "value": "Una mochila vieja y rota. Dentro hay una brújula rota y un mapa arrugado que señala una mazmorra hacia el este."},
+              {"type": "text", "value": "En el reverso del mapa lees: 'El alquimista escondió su tesoro tras tres sellos...'"},
+              {"type": "set_var", "key": "tutorial_visto", "value": true}
+            ]
+          }
+        },
+        {
+          "id": "Huellas",
+          "shape": "rect",
+          "coords": {"x": 200, "y": 260, "w": 150, "h": 30},
+          "on_click": {
+            "actions": [
+              {"type": "text", "value": "Huellas de botas pesadas se dirigen hacia el este, desapareciendo entre los árboles. Alguien fue arrastrado."}
+            ]
+          }
+        },
+        {
+          "id": "Cartel_roto",
+          "shape": "rect",
+          "coords": {"x": 320, "y": 50, "w": 60, "h": 80},
+          "icon": "sign",
+          "on_click": {
+            "actions": [
+              {"type": "text", "value": "El cartel está casi ilegible. Solo se distinguen runas grabadas: ᚠ ᚢ ᚦ ᚨ ᚱ"},
+              {"type": "text", "value": "Debajo, una inscripción borrosa: 'Gira los sellos en el orden correcto...'"}
+            ]
+          }
+        },
+        {
+          "id": "Arbusto",
+          "shape": "circle",
+          "coords": {"x": 50, "y": 250, "r": 35},
+          "on_click": {
+            "actions": [
+              {"type": "text", "value": "Un arbusto con bayas rojas brillantes. No parecen comestibles."}
+            ]
+          }
+        }
+      ],
+      "npc_instances": [],
+      "exits": []
+    },
+    {
+      "id": "loc_celda",
+      "name": "Celda de Piedra",
+      "description": "Oscura, húmeda y sin ventanas. Solo hay una puerta de madera podrida y una antorcha parpadeante.",
+      "color": "#2c3e50",
+      "icon": "mazmorra",
+      "background_type": "dungeon_floor",
+      "gps": {
+        "type": "relative",
+        "bearing_degrees": 90,
+        "distance_meters": 150,
+        "radius_meters": 50
+      },
+      "on_enter": [
+        {"type": "text", "value": "Entras a una celda fría. El aire huele a humedad y metal oxidado."},
+        {"type": "text", "value": "En el suelo hay una alfombra sucia, algo brillante, y un pequeño roedor te observa."}
+      ],
+      "clickable_areas": [
+        {
+          "id": "Moneda_en_el_suelo",
+          "shape": "circle",
+          "coords": {"x": 320, "y": 420, "r": 12},
+          "object_on_ground": "moneda_cobre",
+          "on_click": {
+            "actions": [
+              {"type": "text", "value": "Solo queda una marca circular en el polvo donde estaba la moneda."}
+            ]
+          }
+        },
+        {
+          "id": "Alfombra",
+          "shape": "rect",
+          "coords": {"x": 50, "y": 350, "w": 120, "h": 80},
+          "on_click": {
+            "condition": {"var": "mirada_bajo_alfombra", "eq": true},
+            "actions": [
+              {"type": "text", "value": "La alfombra ya está apartada. No hay nada más debajo."}
+            ],
+            "else": {
+              "actions": [
+                {"type": "text", "value": "Levantas la alfombra con cuidado. ¡Hay una baldosa suelta! Debajo, una llave oxidada brilla en la oscuridad."},
+                {"type": "add_item", "item_id": "llave_celda"},
+                {"type": "set_var", "key": "mirada_bajo_alfombra", "value": true}
+              ]
+            }
+          }
+        },
+        {
+          "id": "Puerta",
+          "shape": "rect",
+          "coords": {"x": 250, "y": 100, "w": 100, "h": 200},
+          "icon": "door",
+          "on_click": {
+            "condition": {"has_item": "llave_celda"},
+            "actions": [
+              {"type": "text", "value": "La llave encaja en la cerradura. Con un chirrido ensordecedor, la puerta se abre."},
+              {"type": "change_scene", "target": "loc_pasillo"}
+            ],
+            "else": {
+              "actions": [
+                {"type": "text", "value": "La puerta está cerrada. La cerradura está oxidada pero parece funcionar con una llave antigua."}
+              ]
+            }
+          }
+        },
+        {
+          "id": "Antorcha",
+          "shape": "circle",
+          "coords": {"x": 400, "y": 150, "r": 30},
+          "on_click": {
+            "actions": [
+              {"type": "text", "value": "La antorcha parpadea. Sus sombras proyectan figuras inquietantes contra la pared de piedra."}
+            ]
+          }
+        }
+      ],
+      "npc_instances": [
+        {
+          "ref": "npc_raton",
+          "position": {"x": 200, "y": 400}
+        }
+      ],
+      "exits": []
+    },
+    {
+      "id": "loc_pasillo",
+      "name": "Pasillo de Servicio",
+      "description": "Un pasillo estrecho que huele a humedad. Al fondo, una puerta masiva de piedra con runas doradas.",
+      "color": "#34495e",
+      "icon": "casa_madera",
+      "background_type": "stone_floor",
+      "on_enter": [
+        {"type": "text", "value": "Lograste escapar de la celda. El pasillo conduce a una sala más allá."},
+        {"type": "text", "value": "Al fondo hay una puerta masiva con una cerradura dorada que brilla con runas mágicas."}
+      ],
+      "clickable_areas": [
+        {
+          "id": "Puerta_dorada",
+          "shape": "rect",
+          "coords": {"x": 280, "y": 60, "w": 80, "h": 140},
+          "on_click": {
+            "condition": {"has_item": "llave_oro"},
+            "actions": [
+              {"type": "text", "value": "La llave dorada encaja perfectamente. Las runas brillan y la puerta se abre con un estruendo."},
+              {"type": "change_scene", "target": "loc_camara"}
+            ],
+            "else": {
+              "actions": [
+                {"type": "text", "value": "Una puerta masiva de piedra. Tiene una cerradura dorada con runas mágicas. Necesitas una llave especial."}
+              ]
+            }
+          }
+        },
+        {
+          "id": "Grieta",
+          "shape": "circle",
+          "coords": {"x": 80, "y": 150, "r": 25},
+          "on_click": {
+            "actions": [
+              {"type": "text", "value": "A través de la grieta en la pared ves una luz dorada parpadeante. Parece un cofre lleno de tesoros."}
+            ]
+          }
+        }
+      ],
+      "npc_instances": [],
+      "exits": []
+    },
+    {
+      "id": "loc_camara",
+      "name": "Cámara del Alquimista",
+      "description": "Una cámara secreta iluminada por gemas brillantes. Aquí el alquimista escondió su mayor tesoro.",
+      "color": "#8e44ad",
+      "icon": "cueva",
+      "background_type": "cave_floor",
+      "on_enter": [
+        {"type": "text", "value": "¡La Cámara del Alquimista! Gemas brillantes iluminan las paredes de cristal."},
+        {"type": "text", "value": "En el centro hay un cofre antiguo sobre una mesa de piedra."}
+      ],
+      "clickable_areas": [
+        {
+          "id": "Cofre",
+          "shape": "rect",
+          "coords": {"x": 160, "y": 180, "w": 80, "h": 60},
+          "on_click": {
+            "actions": [
+              {"type": "text", "value": "Abres el cofre del alquimista. Dentro hay pergaminos antiguos con secretos de transmutación y gemas resplandecientes."},
+              {"type": "text", "value": "¡Has descubierto el tesoro perdido!"}
+            ]
+          }
+        },
+        {
+          "id": "Mesa_trabajo",
+          "shape": "rect",
+          "coords": {"x": 50, "y": 250, "w": 100, "h": 40},
+          "on_click": {
+            "actions": [
+              {"type": "text", "value": "Frascos rotos, polvos extraños de colores imposibles, y un diario con notas ilegibles."}
+            ]
+          }
+        },
+        {
+          "id": "Salida",
+          "shape": "rect",
+          "coords": {"x": 300, "y": 50, "w": 70, "h": 100},
+          "on_click": {
+            "actions": [
+              {"type": "text", "value": "Sales de la cámara por un túnel que conduce al exterior. El sol te da de lleno en la cara."},
+              {"type": "text", "value": "¡Has escapado y descubierto el tesoro del alquimista!"},
+              {"type": "text", "value": "FIN DE LA DEMO. Gracias por jugar GeoEscape."},
+              {"type": "exit_scene"}
+            ]
+          }
+        }
+      ],
+      "npc_instances": [],
+      "exits": []
+    }
+  ],
+  "items": [
+    {
+      "id": "moneda_cobre",
+      "name": "Moneda de Cobre",
+      "description": "Una moneda antigua con símbolos extraños grabados. Parece valiosa.",
+      "icon": "coin",
+      "gps": {
+        "type": "relative",
+        "bearing_degrees": 45,
+        "distance_meters": 20,
+        "pickup_radius_meters": 30
+      },
+      "on_pickup": {
+        "text": "¡Has encontrado una moneda brillante entre la hierba!",
+        "actions": [
+          {"type": "set_var", "key": "cogio_moneda", "value": true}
+        ]
+      }
+    },
+    {
+      "id": "llave_celda",
+      "name": "Llave Oxidada",
+      "description": "Una llave vieja con manchas de óxido. Parece abrir cerraduras antiguas.",
+      "icon": "key"
+    },
+    {
+      "id": "pergamino_simbolos",
+      "name": "Pergamino con Símbolos",
+      "description": "Un pergamino enrollado con 5 símbolos dibujados en tinta roja.",
+      "icon": "scroll",
+      "gps": {
+        "type": "relative",
+        "bearing_degrees": 200,
+        "distance_meters": 40,
+        "pickup_radius_meters": 30
+      },
+      "on_pickup": {
+        "text": "Un pergamino enrollado. Está dibujado con tinta roja: ᚠ ᚢ ᚦ ᚨ ᚱ"
+      }
+    },
+    {
+      "id": "pista_cryptex",
+      "name": "Pista del Guardia",
+      "description": "Un papel arrugado con números garabateados.",
+      "icon": "paper",
+      "on_use": {
+        "text": "Papel arrugado con números garabateados: 3 - 1 - 4", 
+        "actions": []
+      }
+    },
+    {
+      "id": "cryptex_base",
+      "name": "Cryptex del Alquimista",
+      "description": "Un cilindro metálico con ruedas de símbolos. Está cerrado.",
+      "icon": "cryptex",
+      "consumable": true,
+      "gps": {
+        "type": "relative",
+        "bearing_degrees": 315,
+        "distance_meters": 90,
+        "pickup_radius_meters": 30
+      },
+      "on_use": {
+        "text": "Giras las ruedas del cryptex. Los símbolos giran con un click metálico."
+      },
+      "minigame": {
+        "type": "cryptex",
+        "symbols": "ᚠᚢᚦᚨᚱ",
+        "wheels": 3,
+        "solution": [3, 1, 4],
+        "on_success": {
+          "text": "¡Click! El cryptex se abre. Dentro brilla una llave dorada resplandeciente.",
+          "actions": [
+            {"type": "add_item", "item_id": "llave_oro"},
+            {"type": "set_var", "key": "cryptex_resuelto", "value": true}
+          ]
+        }
+      }
+    },
+    {
+      "id": "llave_oro",
+      "name": "Llave Dorada",
+      "description": "Una llave de oro macizo con runas brillantes. Abre sellos mágicos.",
+      "icon": "key"
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc_raton",
+      "name": "Ratón Tizzy",
+      "description": "Un pequeño roedor que parece saber más de lo que dice.",
+      "icon": "rat",
+      "on_interact": {
+        "text": "Un pequeño ratón te mira con curiosidad. Parece decirte que revises bajo la alfombra.",
+        "actions": [
+          {"type": "set_var", "key": "hablado_raton", "value": true}
+        ]
+      }
+    },
+    {
+      "id": "npc_guardia",
+      "name": "Guardia Roncador",
+      "description": "Un guardia duerme profundamente contra un árbol. En su bolsillo asoma un papel.",
+      "icon": "guard",
+      "gps": {
+        "type": "relative",
+        "bearing_degrees": 135,
+        "distance_meters": 60,
+        "interact_radius_meters": 35
+      },
+      "on_interact": {
+        "condition": {"has_item": "pista_cryptex"},
+        "text": "El guardia sigue roncando contra el árbol. Ya tienes la pista de su bolsillo.",
+        "actions": [],
+        "else": {
+          "text": "El guardia ronca fuertemente. En su bolsillo asoma un papel arrugado. Lo coges con cuidado sin despertarlo.",
+          "actions": [
+            {"type": "add_item", "item_id": "pista_cryptex"}
+          ]
+        }
+      }
+    }
+  ],
+  "events": []
+}

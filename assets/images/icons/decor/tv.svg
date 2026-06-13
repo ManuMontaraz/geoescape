@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Sombra -->
+  <ellipse cx="34" cy="60" rx="16" ry="2" fill="#000" opacity="0.15"/>
+  <!-- Cuerpo del televisor -->
+  <rect x="12" y="16" width="40" height="32" rx="4" fill="#34495e" stroke="#333" stroke-width="1.5"/>
+  <!-- Pantalla -->
+  <rect x="16" y="20" width="32" height="24" rx="2" fill="#7f8c8d" stroke="#2c3e50" stroke-width="1"/>
+  <!-- Brillo pantalla -->
+  <rect x="18" y="22" width="28" height="20" rx="1" fill="#95a5a6" opacity="0.5"/>
+  <!-- Reflejo pantalla -->
+  <path d="M 20 24 L 30 36 L 24 36 L 20 40 Z" fill="#fff" opacity="0.2"/>
+  <!-- Antena izquierda -->
+  <line x1="24" y1="16" x2="18" y2="6" stroke="#7f8c8d" stroke-width="2" stroke-linecap="round"/>
+  <!-- Antena derecha -->
+  <line x1="40" y1="16" x2="46" y2="6" stroke="#7f8c8d" stroke-width="2" stroke-linecap="round"/>
+  <!-- Bola antena izquierda -->
+  <circle cx="18" cy="6" r="2" fill="#95a5a6" stroke="#333" stroke-width="1"/>
+  <!-- Bola antena derecha -->
+  <circle cx="46" cy="6" r="2" fill="#95a5a6" stroke="#333" stroke-width="1"/>
+  <!-- Botones -->
+  <circle cx="50" cy="26" r="1.5" fill="#e74c3c" stroke="#333" stroke-width="0.5"/>
+  <circle cx="50" cy="32" r="1.5" fill="#f1c40f" stroke="#333" stroke-width="0.5"/>
+  <circle cx="50" cy="38" r="1.5" fill="#2ecc71" stroke="#333" stroke-width="0.5"/>
+  <!-- Patas -->
+  <rect x="18" y="48" width="4" height="8" rx="1" fill="#7f8c8d" stroke="#333" stroke-width="1"/>
+  <rect x="42" y="48" width="4" height="8" rx="1" fill="#7f8c8d" stroke="#333" stroke-width="1"/>
+</svg>

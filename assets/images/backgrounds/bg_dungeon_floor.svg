@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <!-- Fondo base oscuro -->
+  <rect x="0" y="0" width="400" height="300" fill="#2c3e50"/>
+  <!-- Suelo de piedra (60% inferior) -->
+  <rect x="0" y="120" width="400" height="180" fill="#34495e"/>
+  <!-- Losetas suelo -->
+  <g stroke="#1a252f" stroke-width="2">
+    <rect x="0" y="120" width="100" height="60" fill="#2c3e50" stroke="#1a252f"/>
+    <rect x="100" y="120" width="80" height="60" fill="#34495e" stroke="#1a252f"/>
+    <rect x="180" y="120" width="120" height="60" fill="#2c3e50" stroke="#1a252f"/>
+    <rect x="300" y="120" width="100" height="60" fill="#34495e" stroke="#1a252f"/>
+    <rect x="0" y="180" width="80" height="60" fill="#34495e" stroke="#1a252f"/>
+    <rect x="80" y="180" width="100" height="60" fill="#2c3e50" stroke="#1a252f"/>
+    <rect x="180" y="180" width="90" height="60" fill="#34495e" stroke="#1a252f"/>
+    <rect x="270" y="180" width="130" height="60" fill="#2c3e50" stroke="#1a252f"/>
+    <rect x="0" y="240" width="120" height="60" fill="#2c3e50" stroke="#1a252f"/>
+    <rect x="120" y="240" width="80" height="60" fill="#34495e" stroke="#1a252f"/>
+    <rect x="200" y="240" width="100" height="60" fill="#2c3e50" stroke="#1a252f"/>
+    <rect x="300" y="240" width="100" height="60" fill="#34495e" stroke="#1a252f"/>
+  </g>
+  <!-- Pared de piedra oscura (40% superior) -->
+  <rect x="0" y="0" width="400" height="120" fill="#1a252f"/>
+  <!-- Piedras pared -->
+  <g stroke="#0d1b2a" stroke-width="2">
+    <rect x="0" y="0" width="80" height="40" fill="#2c3e50" stroke="#0d1b2a"/>
+    <rect x="80" y="0" width="100" height="40" fill="#1a252f" stroke="#0d1b2a"/>
+    <rect x="180" y="0" width="90" height="40" fill="#2c3e50" stroke="#0d1b2a"/>
+    <rect x="270" y="0" width="130" height="40" fill="#1a252f" stroke="#0d1b2a"/>
+    <rect x="0" y="40" width="100" height="40" fill="#1a252f" stroke="#0d1b2a"/>
+    <rect x="100" y="40" width="80" height="40" fill="#2c3e50" stroke="#0d1b2a"/>
+    <rect x="180" y="40" width="100" height="40" fill="#1a252f" stroke="#0d1b2a"/>
+    <rect x="280" y="40" width="120" height="40" fill="#2c3e50" stroke="#0d1b2a"/>
+    <rect x="0" y="80" width="90" height="40" fill="#2c3e50" stroke="#0d1b2a"/>
+    <rect x="90" y="80" width="110" height="40" fill="#1a252f" stroke="#0d1b2a"/>
+    <rect x="200" y="80" width="100" height="40" fill="#2c3e50" stroke="#0d1b2a"/>
+    <rect x="300" y="80" width="100" height="40" fill="#1a252f" stroke="#0d1b2a"/>
+  </g>
+  <!-- Antorcha izquierda -->
+  <g>
+    <rect x="30" y="50" width="8" height="40" fill="#5d4037" stroke="#333" stroke-width="1"/>
+    <circle cx="34" cy="45" r="10" fill="#f39c12" opacity="0.6"/>
+    <circle cx="34" cy="45" r="6" fill="#f1c40f" opacity="0.8"/>
+    <path d="M 30 35 Q 34 25 38 35" stroke="#e74c3c" stroke-width="2" fill="none"/>
+    <path d="M 32 38 Q 34 30 36 38" stroke="#e67e22" stroke-width="1.5" fill="none"/>
+  </g>
+  <!-- Antorcha derecha -->
+  <g>
+    <rect x="362" y="50" width="8" height="40" fill="#5d4037" stroke="#333" stroke-width="1"/>
+    <circle cx="366" cy="45" r="10" fill="#f39c12" opacity="0.6"/>
+    <circle cx="366" cy="45" r="6" fill="#f1c40f" opacity="0.8"/>
+    <path d="M 362 35 Q 366 25 370 35" stroke="#e74c3c" stroke-width="2" fill="none"/>
+    <path d="M 364 38 Q 366 30 368 38" stroke="#e67e22" stroke-width="1.5" fill="none"/>
+  </g>
+  <!-- Línea divisoria -->
+  <line x1="0" y1="120" x2="400" y2="120" stroke="#000" stroke-width="3"/>
+  <!-- Humo/atmosfera -->
+  <ellipse cx="200" cy="80" rx="80" ry="20" fill="#000" opacity="0.2"/>
+</svg>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Sombra -->
+  <ellipse cx="34" cy="58" rx="12" ry="3" fill="#000" opacity="0.15"/>
+  <!-- Base plana -->
+  <polygon points="20,50 44,50 40,54 24,54" fill="#2980b9" stroke="#333" stroke-width="1"/>
+  <!-- Cuerpo principal (diamante) -->
+  <polygon points="32,8 48,24 40,44 24,44 16,24" fill="#3498db" stroke="#333" stroke-width="1.5"/>
+  <!-- Faceta superior -->
+  <polygon points="32,8 40,24 32,30 24,24" fill="#5dade2" stroke="#2980b9" stroke-width="1"/>
+  <!-- Faceta lateral izquierda -->
+  <polygon points="24,24 32,30 28,44 20,44 16,24" fill="#85c1e9" stroke="#2980b9" stroke-width="1"/>
+  <!-- Faceta lateral derecha -->
+  <polygon points="32,30 40,24 48,24 44,44 36,44" fill="#2e86c1" stroke="#2980b9" stroke-width="1"/>
+  <!-- Faceta central inferior -->
+  <polygon points="28,44 32,30 36,44" fill="#2471a3" stroke="#2980b9" stroke-width="1"/>
+  <!-- Líneas de corte -->
+  <line x1="32" y1="8" x2="32" y2="30" stroke="#1a5276" stroke-width="0.8"/>
+  <line x1="16" y1="24" x2="48" y2="24" stroke="#1a5276" stroke-width="0.8"/>
+  <line x1="24" y1="24" x2="28" y2="44" stroke="#1a5276" stroke-width="0.8"/>
+  <line x1="40" y1="24" x2="36" y2="44" stroke="#1a5276" stroke-width="0.8"/>
+  <!-- Destello en vértice superior -->
+  <polygon points="30,10 32,6 34,10" fill="#fff" opacity="0.8"/>
+  <circle cx="32" cy="12" r="1.5" fill="#fff" opacity="0.9"/>
+</svg>

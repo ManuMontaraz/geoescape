@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Shadow -->
+  <ellipse cx="32" cy="58" rx="18" ry="4" fill="#111" opacity="0.25" stroke="none"/>
+
+  <!-- Stone archway -->
+  <path d="M 12 52 L 12 28 Q 12 14 32 14 Q 52 14 52 28 L 52 52 Z" fill="#34495e" stroke="#333" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Inner dark hole -->
+  <path d="M 16 52 L 16 30 Q 16 18 32 18 Q 48 18 48 30 L 48 52 Z" fill="#1a1a2e" stroke="#111" stroke-width="1"/>
+
+  <!-- Stone blocks on arch -->
+  <line x1="12" y1="24" x2="52" y2="24" stroke="#2c3e50" stroke-width="1"/>
+  <line x1="12" y1="32" x2="52" y2="32" stroke="#2c3e50" stroke-width="1"/>
+  <line x1="12" y1="40" x2="52" y2="40" stroke="#2c3e50" stroke-width="1"/>
+  <line x1="12" y1="48" x2="52" y2="48" stroke="#2c3e50" stroke-width="1"/>
+  <line x1="22" y1="14" x2="22" y2="24" stroke="#2c3e50" stroke-width="0.8"/>
+  <line x1="32" y1="14" x2="32" y2="24" stroke="#2c3e50" stroke-width="0.8"/>
+  <line x1="42" y1="14" x2="42" y2="24" stroke="#2c3e50" stroke-width="0.8"/>
+
+  <!-- Iron bars -->
+  <line x1="22" y1="28" x2="22" y2="52" stroke="#7f8c8d" stroke-width="2"/>
+  <line x1="32" y1="24" x2="32" y2="52" stroke="#7f8c8d" stroke-width="2"/>
+  <line x1="42" y1="28" x2="42" y2="52" stroke="#7f8c8d" stroke-width="2"/>
+  <line x1="18" y1="36" x2="46" y2="36" stroke="#7f8c8d" stroke-width="1.5"/>
+  <line x1="18" y1="44" x2="46" y2="44" stroke="#7f8c8d" stroke-width="1.5"/>
+
+  <!-- Torches on sides -->
+  <rect x="8" y="22" width="3" height="10" rx="0.5" fill="#5C3A1E" stroke="#333" stroke-width="0.8"/>
+  <circle cx="9.5" cy="20" r="2.5" fill="#e67e22" stroke="#e74c3c" stroke-width="1"/>
+  <circle cx="9.5" cy="19" r="1.5" fill="#f1c40f" opacity="0.8" stroke="none"/>
+
+  <rect x="53" y="22" width="3" height="10" rx="0.5" fill="#5C3A1E" stroke="#333" stroke-width="0.8"/>
+  <circle cx="54.5" cy="20" r="2.5" fill="#e67e22" stroke="#e74c3c" stroke-width="1"/>
+  <circle cx="54.5" cy="19" r="1.5" fill="#f1c40f" opacity="0.8" stroke="none"/>
+
+  <!-- Skull above entrance -->
+  <ellipse cx="32" cy="12" rx="3" ry="2.5" fill="#ecf0f1" stroke="#333" stroke-width="0.8"/>
+  <circle cx="31" cy="11.5" r="0.6" fill="#333"/>
+  <circle cx="33" cy="11.5" r="0.6" fill="#333"/>
+</svg>

@@ -1,0 +1,126 @@
+<?php
+header('Content-Type: text/plain; charset=utf-8');
+
+// Load .env
+$envFile = __DIR__ . '/.env';
+if (!file_exists($envFile)) {
+    die("ERROR: .env file not found\n");
+}
+
+require_once __DIR__ . '/config/env.php';
+$env = loadEnv($envFile);
+
+$rootUser = $env['DB_ROOT_USER'] ?? 'root';
+$rootPass = $env['DB_ROOT_PASS'] ?? '';
+$dbName = $env['DB_NAME'] ?? 'geoescape';
+$appUser = $env['DB_USER'] ?? 'geoescape_user';
+$appPass = $env['DB_PASS'] ?? bin2hex(random_bytes(16));
+
+echo "=== GeoEscape Database Setup ===\n\n";
+
+// Connect as root
+try {
+    $pdo = new PDO("mysql:host=localhost;charset=utf8mb4", $rootUser, $rootPass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "[OK] Connected as root\n";
+} catch (PDOException $e) {
+    die("ERROR: Cannot connect as root: " . $e->getMessage() . "\n");
+}
+
+// Create database
+$pdo->exec("CREATE DATABASE IF NOT EXISTS {$dbName} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+echo "[OK] Database '{$dbName}' created/exists\n";
+
+// Create app user
+$safeAppPass = str_replace("'", "\\'", $appPass);
+try {
+    $pdo->exec("CREATE USER IF NOT EXISTS '{$appUser}'@'localhost' IDENTIFIED BY '{$safeAppPass}'");
+    $pdo->exec("GRANT ALL PRIVILEGES ON {$dbName}.* TO '{$appUser}'@'localhost'");
+    $pdo->exec("FLUSH PRIVILEGES");
+    echo "[OK] User '{$appUser}' created with privileges\n";
+} catch (PDOException $e) {
+    echo "[WARN] User creation: " . $e->getMessage() . "\n";
+}
+
+// Switch to database
+$pdo->exec("USE {$dbName}");
+
+// Create tables
+$tables = [
+    "users" => "CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        email_verified BOOLEAN DEFAULT FALSE,
+        verification_token VARCHAR(64),
+        remember_token VARCHAR(64),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_login TIMESTAMP NULL,
+        INDEX(email),
+        INDEX(verification_token)
+    ) ENGINE=InnoDB",
+
+    "password_resets" => "CREATE TABLE IF NOT EXISTS password_resets (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        token VARCHAR(64) NOT NULL,
+        expires_at TIMESTAMP NOT NULL,
+        used BOOLEAN DEFAULT FALSE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        INDEX(token)
+    ) ENGINE=InnoDB",
+
+    "php_sessions" => "CREATE TABLE IF NOT EXISTS php_sessions (
+        id VARCHAR(128) NOT NULL PRIMARY KEY,
+        data MEDIUMTEXT,
+        last_access TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX(last_access)
+    ) ENGINE=InnoDB",
+
+    "campaigns" => "CREATE TABLE IF NOT EXISTS campaigns (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        uuid VARCHAR(36) UNIQUE NOT NULL,
+        user_id INT NOT NULL,
+        campaign_id VARCHAR(100) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        author VARCHAR(100),
+        campaign_json LONGTEXT NOT NULL,
+        gps_type ENUM('relative', 'absolute') DEFAULT 'relative',
+        origin_lat DECIMAL(10,8) NULL,
+        origin_lng DECIMAL(11,8) NULL,
+        is_public BOOLEAN DEFAULT FALSE,
+        vote_count INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        UNIQUE(user_id, campaign_id)
+    ) ENGINE=InnoDB",
+
+    "campaign_votes" => "CREATE TABLE IF NOT EXISTS campaign_votes (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        campaign_id INT NOT NULL,
+        user_id INT NOT NULL,
+        vote_type ENUM('up', 'down') NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        UNIQUE(campaign_id, user_id)
+    ) ENGINE=InnoDB"
+];
+
+foreach ($tables as $name => $sql) {
+    try {
+        $pdo->exec($sql);
+        echo "[OK] Table '{$name}' created\n";
+    } catch (PDOException $e) {
+        echo "[ERROR] Table '{$name}': " . $e->getMessage() . "\n";
+    }
+}
+
+echo "\n=== Setup Complete ===\n";
+echo "Database: {$dbName}\n";
+echo "User: {$appUser}\n";
+echo "App Password: {$appPass}\n";
+echo "\nIMPORTANT: Save this password and delete setup.php after use!\n";

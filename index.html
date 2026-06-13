@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>GeoEscape</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="main-header">
+      <h1>GeoEscape</h1>
+      <p>Escapa de la realidad</p>
+      <div id="user-area" style="position:absolute;top:1rem;right:1rem;">
+        <button id="btn-login" class="btn btn-sm" onclick="showAuthModal()" style="display:none">👤 Iniciar Sesión</button>
+        <div id="user-info" style="display:none;align-items:center;gap:0.5rem;">
+          <span id="user-name" style="color:var(--accent);font-weight:bold;"></span>
+          <button class="btn btn-sm" onclick="logout()">🚪 Salir</button>
+        </div>
+      </div>
+    </header>
+    <main class="menu-container">
+      <button class="btn btn-primary" onclick="startDemo()">🎮 Jugar Campaña Demo</button>
+      <button class="btn btn-secondary" onclick="loadCampaign()">📂 Cargar JSON Manual</button>
+      <button class="btn btn-secondary" onclick="showNearbyCampaigns()">📍 Buscar Campañas Cercanas</button>
+      <button class="btn btn-secondary" onclick="showRelativeCampaigns()">📂 Descargar Campaña Relativa</button>
+      <button class="btn btn-secondary" id="btn-editor" style="display:none" onclick="window.location.href='editor.html'">🛠️ Editor de Campañas</button>
+      <button class="btn btn-secondary" onclick="showCreditsModal()">❤️ Créditos</button>
+      <input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleFile(event)">
+    </main>
+    <footer class="main-footer">
+      <p>Offline First • Sin anuncios • Open Source</p>
+    </footer>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:2000;display:flex;align-items:center;justify-content:center;">
+    <div style="background:var(--bg-panel);padding:2rem;border-radius:8px;border:2px solid var(--accent);max-width:400px;width:90%;max-height:90vh;overflow-y:auto;">
+      <div id="auth-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+        <button class="btn btn-sm active" onclick="switchAuthTab('login')" data-tab="login">Iniciar Sesión</button>
+        <button class="btn btn-sm" onclick="switchAuthTab('register')" data-tab="register">Registrarse</button>
+      </div>
+      
+      <!-- Login Form -->
+      <div id="login-form">
+        <div class="editor-group"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
+        <div class="editor-group"><label>Contraseña</label><input type="password" id="login-password" placeholder="********"></div>
+        <label style="display:flex;align-items:center;gap:0.4rem;margin-bottom:1rem;">
+          <input type="checkbox" id="login-remember"> Recordarme
+        </label>
+        <button class="btn btn-primary" style="width:100%;" onclick="login()">Iniciar Sesión</button>
+        <p style="text-align:center;margin-top:1rem;"><a href="#" onclick="switchAuthTab('forgot')" style="color:var(--accent);">¿Olvidaste tu contraseña?</a></p>
+      </div>
+      
+      <!-- Register Form -->
+      <div id="register-form" style="display:none;">
+        <div class="editor-group"><label>Usuario</label><input type="text" id="reg-username" placeholder="Tu Nombre"></div>
+        <div class="editor-group"><label>Email</label><input type="email" id="reg-email" placeholder="tu@email.com"></div>
+        <div class="editor-group"><label>Contraseña</label><input type="password" id="reg-password" placeholder="Mínimo 8 caracteres"></div>
+        <div class="editor-group"><label>Confirmar Contraseña</label><input type="password" id="reg-password-confirm" placeholder="Repite la contraseña"></div>
+        <button class="btn btn-primary" style="width:100%;" onclick="register()">Registrarse</button>
+      </div>
+      
+      <!-- Forgot Password Form -->
+      <div id="forgot-form" style="display:none;">
+        <div class="editor-group"><label>Email</label><input type="email" id="forgot-email" placeholder="tu@email.com"></div>
+        <button class="btn btn-primary" style="width:100%;" onclick="forgotPassword()">Enviar Enlace</button>
+        <p style="text-align:center;margin-top:1rem;"><a href="#" onclick="switchAuthTab('login')" style="color:var(--accent);">Volver al login</a></p>
+      </div>
+      
+      <button class="btn btn-sm" style="margin-top:1rem;width:100%;" onclick="hideAuthModal()">❌ Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Modal for Nearby / Cloud Campaigns -->
+  <div id="cloud-menu-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;align-items:center;justify-content:center;">
+    <div id="cloud-menu-inner" style="background:var(--bg-panel);border:2px solid var(--accent);border-radius:8px;max-width:900px;width:95%;height:90dvh;display:flex;flex-direction:column;overflow:hidden;position:relative;">
+      <button onclick="document.getElementById('cloud-menu-modal').style.display='none'" style="position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;z-index:10;">×</button>
+      <h3 id="cloud-menu-title" style="color:var(--accent);margin:0;padding:0.8rem 1rem;border-bottom:1px solid var(--accent);flex-shrink:0;">Campañas</h3>
+      <div id="cloud-menu-content" style="flex:1;overflow-y:auto;padding:1rem;"></div>
+    </div>
+  </div>
+
+  <!-- Credits Modal -->
+  <div id="credits-modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;">
+    <div style="background:var(--bg-panel);border:2px solid var(--accent);border-radius:8px;max-width:400px;width:90%;max-height:90vh;overflow-y:auto;padding:2rem;text-align:center;">
+      <button onclick="hideCreditsModal()" style="position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;">×</button>
+      <h2 style="color:var(--accent);margin-bottom:1rem;">❤️ Créditos</h2>
+      <p style="color:var(--text-muted);margin-bottom:1rem;">GeoEscape es un proyecto indie</p>
+      <p style="color:var(--text);margin-bottom:1.5rem;font-size:1.1rem;">Hecho con ❤️ por <strong>Manu Montaraz</strong></p>
+      <p style="color:var(--text-muted);margin-bottom:1.5rem;">Gracias por tu apoyo</p>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;">
+        <a href="https://manumontaraz.es" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;">🌐 Visitar mi web</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.5rem;">Redes sociales</p>
+        <a href="https://www.youtube.com/@manumontaraz" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:0.9rem;">📺 YouTube</a>
+        <a href="https://www.instagram.com/manumontaraz/" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:0.9rem;">📸 Instagram</a>
+        <a href="https://bsky.app/profile/manumontaraz.es" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:0.9rem;">🦋 Bluesky</a>
+        <a href="https://www.twitch.tv/manumontaraz" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:0.9rem;">🎮 Twitch</a>
+        <a href="https://www.tiktok.com/@manumontaraz" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:0.9rem;">🎵 TikTok</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.5rem;">Apoya el proyecto</p>
+        <a href="https://donate.stripe.com/cNi00j5uteU5fYncMj7bW02" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;background:#27ae60;">💝 Donación única</a>
+        <a href="https://donate.stripe.com/8x25kD5ut8vHeUj6nV7bW01" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;background:#3498db;">🤝 Apadrinar</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="js/core/db.js"></script>
+  <script>
+    // Service worker disabled for development
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        for (const reg of regs) reg.unregister();
+      });
+    }
+
+    const SAVED_KEY = 'ge_saved_campaign';
+
+    function clearCampaignStorage() {
+      localStorage.removeItem('ge_campaign_json');
+      localStorage.removeItem('ge_current_campaign');
+      localStorage.removeItem('ge_saved_campaign');
+      localStorage.removeItem('ge_cloud_uuid');
+      localStorage.removeItem('ge_campaign_is_public');
+    }
+
+    async function startDemo() {
+      try {
+        const res = await fetch('assets/campaigns/demo.json');
+        const jsonText = await res.text();
+        clearCampaignStorage();
+        localStorage.setItem('ge_campaign_json', jsonText);
+        localStorage.setItem('ge_current_campaign', 'assets/campaigns/demo.json');
+        localStorage.setItem(SAVED_KEY, 'demo_escape_celda');
+        window.location.href = 'game.html';
+      } catch (e) {
+        alert('No se pudo cargar la demo. ¿Abriste el archivo directamente? Intenta usar un servidor local (php -S localhost:8000).');
+      }
+    }
+
+    function loadCampaign() {
+      document.getElementById('fileInput').click();
+    }
+
+    function handleFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target.result);
+          clearCampaignStorage();
+          localStorage.setItem('ge_campaign_json', ev.target.result);
+          localStorage.setItem('ge_current_campaign', 'custom');
+          localStorage.setItem(SAVED_KEY, data.campaign_id || 'custom');
+          window.location.href = 'game.html';
+        } catch (err) {
+          alert('JSON inválido');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Always clear campaign data on landing page
+    clearCampaignStorage();
+
+    // ============ AUTH SYSTEM ============
+    const API_BASE = '/api';
+    let currentUser = null;
+
+    // Check auth status on load
+    async function checkAuth() {
+      try {
+        const res = await fetch(`${API_BASE}/user/profile.php`, {
+          credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success) {
+          currentUser = data.user;
+          showLoggedIn(data.user);
+        } else {
+          showLoggedOut();
+        }
+      } catch (e) {
+        showLoggedOut();
+      }
+    }
+
+    function showLoggedIn(user) {
+      document.getElementById('btn-login').style.display = 'none';
+      document.getElementById('user-info').style.display = 'flex';
+      document.getElementById('user-name').textContent = user.username;
+      document.getElementById('btn-editor').style.display = 'inline-block';
+    }
+
+    function showLoggedOut() {
+      document.getElementById('btn-login').style.display = 'inline-block';
+      document.getElementById('user-info').style.display = 'none';
+      document.getElementById('btn-editor').style.display = 'none';
+    }
+
+    function showAuthModal() {
+      document.getElementById('auth-modal').classList.remove('hidden');
+    }
+
+    function hideAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+    }
+
+    function switchAuthTab(tab) {
+      document.querySelectorAll('#auth-tabs button').forEach(b => b.classList.remove('active'));
+      document.querySelector(`#auth-tabs button[data-tab="${tab}"]`)?.classList.add('active');
+      
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'none';
+      document.getElementById('forgot-form').style.display = 'none';
+      
+      if (tab === 'login') document.getElementById('login-form').style.display = 'block';
+      if (tab === 'register') document.getElementById('register-form').style.display = 'block';
+      if (tab === 'forgot') document.getElementById('forgot-form').style.display = 'block';
+    }
+
+    async function login() {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const remember = document.getElementById('login-remember').checked;
+      
+      try {
+        const res = await fetch(`${API_BASE}/auth/login.php`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, remember })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          currentUser = data.user;
+          showLoggedIn(data.user);
+          hideAuthModal();
+          alert('¡Bienvenido de vuelta, ' + data.user.username + '!');
+        } else {
+          alert(data.error || 'Error al iniciar sesión');
+        }
+      } catch (e) {
+        alert('Error de conexión');
+      }
+    }
+
+    async function register() {
+      const username = document.getElementById('reg-username').value;
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+      const passwordConfirm = document.getElementById('reg-password-confirm').value;
+      
+      if (password !== passwordConfirm) {
+        alert('Las contraseñas no coinciden');
+        return;
+      }
+      
+      try {
+        const res = await fetch(`${API_BASE}/auth/register.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          alert('¡Registro exitoso! Revisa tu email para verificar tu cuenta.');
+          switchAuthTab('login');
+        } else {
+          alert(data.error || 'Error en el registro');
+        }
+      } catch (e) {
+        alert('Error de conexión');
+      }
+    }
+
+    async function logout() {
+      try {
+        await fetch(`${API_BASE}/auth/logout.php`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+        currentUser = null;
+        showLoggedOut();
+        alert('Sesión cerrada');
+      } catch (e) {
+        alert('Error al cerrar sesión');
+      }
+    }
+
+    async function forgotPassword() {
+      const email = document.getElementById('forgot-email').value;
+      
+      try {
+        const res = await fetch(`${API_BASE}/auth/forgot.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        
+        alert(data.message || 'Si el email existe, se ha enviado un enlace.');
+        if (data.success) switchAuthTab('login');
+      } catch (e) {
+        alert('Error de conexión');
+      }
+    }
+
+    // ============ CLOUD CAMPAIGNS ============
+    async function showNearbyCampaigns() {
+      const modal = document.getElementById('cloud-menu-modal');
+      const content = document.getElementById('cloud-menu-content');
+      const title = document.getElementById('cloud-menu-title');
+      title.textContent = '📍 Campañas Cercanas (30km)';
+      content.innerHTML = '<p style="color:var(--text-muted);">Solicitando ubicación GPS...</p>';
+      modal.style.display = 'flex';
+
+      if (!navigator.geolocation) {
+        content.innerHTML = '<p style="color:#e74c3c;">Tu navegador no soporta GPS.</p>';
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        content.innerHTML = `<p style="color:var(--text-muted);">Buscando campañas cerca de ${lat.toFixed(4)}, ${lng.toFixed(4)}...</p>`;
+
+        try {
+          const res = await fetch(`api/campaigns/nearby.php?lat=${lat}&lng=${lng}&radius=30`);
+          const data = await res.json();
+          if (!data.success || data.campaigns.length === 0) {
+            content.innerHTML = '<p style="color:var(--text-muted);">No hay campañas públicas en un radio de 30km.</p>';
+            return;
+          }
+
+          // Build map + list
+          let html = '<div id="nearby-map" style="height:65dvh;border-radius:6px;border:1px solid var(--accent);margin-bottom:1rem;"></div>';
+          html += '<div style="display:flex;flex-direction:column;gap:0.8rem;">';
+          for (const c of data.campaigns) {
+            html += `
+              <div style="border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:0.8rem;">
+                <strong>${esc(c.title || c.campaign_id)}</strong>
+                <div style="font-size:0.8rem;color:var(--text-muted);">
+                  ${c.distance.toFixed(1)}km de distancia | 👍 ${c.vote_count || 0} | Autor: ${esc(c.author || 'Anónimo')}
+                </div>
+                <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+                  <button class="btn btn-sm btn-primary" onclick="downloadAndPlay('${esc(c.uuid)}')">📥 Jugar</button>
+                  <button class="btn btn-sm btn-secondary" onclick="downloadCampaign('${esc(c.uuid)}')">⬇️ Descargar</button>
+                </div>
+              </div>
+            `;
+          }
+          html += '</div>';
+          content.innerHTML = html;
+
+          // Init map after DOM update
+          setTimeout(() => {
+            const map = L.map('nearby-map').setView([lat, lng], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // User marker (gold star)
+            const userIcon = L.divIcon({
+              className: 'user-marker',
+              html: '<div style="width:28px;height:28px;background:linear-gradient(135deg,#ffd700,#ffaa00);border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 12px rgba(255,215,0,0.6);">★</div>',
+              iconSize: [28, 28],
+              iconAnchor: [14, 14]
+            });
+            L.marker([lat, lng], { icon: userIcon }).addTo(map).bindPopup('<b>📍 Tú estás aquí</b>').openPopup();
+
+            // Campaign markers with interactive popup
+            for (const c of data.campaigns) {
+              if (c.origin_lat && c.origin_lng) {
+                const popup = `
+                  <div style="min-width:220px;font-family:sans-serif;">
+                    <strong style="color:var(--accent);font-size:1.1rem;display:block;margin-bottom:0.4rem;">${esc(c.title || c.campaign_id)}</strong>
+                    <p style="color:var(--text-muted);margin:0.3rem 0;font-size:0.85rem;line-height:1.4;">${esc(c.description || 'Sin descripción')}</p>
+                    <div style="font-size:0.8rem;color:var(--text-muted);margin:0.4rem 0;">
+                      👍 ${c.vote_count || 0} votos | Autor: ${esc(c.author || 'Anónimo')}
+                    </div>
+                    <div style="display:flex;gap:0.5rem;">
+                      <button class="btn btn-sm btn-primary" onclick="downloadAndPlay('${esc(c.uuid)}')" style="flex:1;">📥 Jugar</button>
+                      <button class="btn btn-sm btn-secondary" onclick="downloadCampaign('${esc(c.uuid)}')" style="flex:1;">⬇️ Descargar</button>
+                    </div>
+                  </div>
+                `;
+                L.marker([c.origin_lat, c.origin_lng]).addTo(map).bindPopup(popup);
+              }
+            }
+
+            map.fitBounds(data.campaigns.map(c => [c.origin_lat, c.origin_lng]).concat([[lat, lng]]), { padding: [40, 40] });
+          }, 100);
+        } catch (e) {
+          content.innerHTML = `<p style="color:#e74c3c;">Error: ${e.message}</p>`;
+        }
+      }, (err) => {
+        content.innerHTML = `<p style="color:#e74c3c;">Error GPS: ${err.message}</p>`;
+      }, { enableHighAccuracy: true, timeout: 10000 });
+    }
+
+    async function showRelativeCampaigns() {
+      const modal = document.getElementById('cloud-menu-modal');
+      const content = document.getElementById('cloud-menu-content');
+      const title = document.getElementById('cloud-menu-title');
+      title.textContent = '📂 Campañas Relativas (Descargar)';
+      content.innerHTML = '<p style="color:var(--text-muted);">Cargando...</p>';
+      modal.style.display = 'flex';
+
+      try {
+        const res = await fetch('api/campaigns/list.php?gps_type=relative&sort=votes');
+        const data = await res.json();
+        if (!data.success || data.campaigns.length === 0) {
+          content.innerHTML = '<p style="color:var(--text-muted);">No hay campañas relativas públicas disponibles.</p>';
+          return;
+        }
+        let html = '<div style="display:flex;flex-direction:column;gap:0.8rem;">';
+        for (const c of data.campaigns) {
+          html += `
+            <div style="border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:0.8rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <strong>${esc(c.title || c.campaign_id)}</strong>
+                <span style="font-size:0.8rem;color:var(--text-muted);">👍 ${c.vote_count || 0}</span>
+              </div>
+              <div style="font-size:0.8rem;color:var(--text-muted);margin:0.3rem 0;">
+                ${esc(c.description || 'Sin descripción')}
+              </div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.3rem;">
+                Autor: ${esc(c.author || 'Anónimo')}
+              </div>
+              <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+                <button class="btn btn-sm btn-primary" onclick="downloadAndPlay('${esc(c.uuid)}')">📥 Jugar</button>
+                <button class="btn btn-sm btn-secondary" onclick="downloadCampaign('${esc(c.uuid)}')">⬇️ Descargar JSON</button>
+              </div>
+            </div>
+          `;
+        }
+        html += '</div>';
+        content.innerHTML = html;
+      } catch (e) {
+        content.innerHTML = `<p style="color:#e74c3c;">Error: ${e.message}</p>`;
+      }
+    }
+
+    async function downloadAndPlay(uuid) {
+      try {
+        const res = await fetch(`api/campaigns/load.php?uuid=${encodeURIComponent(uuid)}`, { credentials: 'same-origin' });
+        const data = await res.json();
+        if (!data.success) {
+          alert('❌ ' + (data.error || 'Error al descargar'));
+          return;
+        }
+        const campaign = JSON.parse(data.campaign.campaign_json);
+        clearCampaignStorage();
+        localStorage.setItem('ge_campaign_json', data.campaign.campaign_json);
+        localStorage.setItem('ge_current_campaign', 'cloud_' + uuid);
+        localStorage.setItem('ge_saved_campaign', campaign.campaign_id);
+        localStorage.setItem('ge_cloud_uuid', uuid); // Store UUID for voting later
+        localStorage.setItem('ge_campaign_is_public', data.campaign.is_public ? '1' : '0');
+        window.location.href = 'game.html';
+      } catch (e) {
+        alert('❌ Error: ' + e.message);
+      }
+    }
+
+    async function downloadCampaign(uuid) {
+      try {
+        const res = await fetch(`api/campaigns/load.php?uuid=${encodeURIComponent(uuid)}`, { credentials: 'same-origin' });
+        const data = await res.json();
+        if (!data.success) {
+          alert('❌ ' + (data.error || 'Error al descargar'));
+          return;
+        }
+        const campaign = JSON.parse(data.campaign.campaign_json);
+        const blob = new Blob([JSON.stringify(campaign, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = (campaign.campaign_id || 'campana') + '.json';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        alert('❌ Error: ' + e.message);
+      }
+    }
+
+    function esc(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function showCreditsModal() {
+      document.getElementById('credits-modal').classList.remove('hidden');
+    }
+
+    function hideCreditsModal() {
+      document.getElementById('credits-modal').classList.add('hidden');
+    }
+
+    // Check auth on page load
+    checkAuth();
+  </script>
+</body>
+</html>
