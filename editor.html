@@ -1,9 +1,14 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es> -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GeoEscape - Editor de Campañas</title>
+  <meta name="robots" content="noindex, nofollow">
+  <title>GeoEscape - Editor de Casos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <style>
@@ -60,6 +65,7 @@
       display: flex;
       gap: 0.3rem;
       flex: 1;
+      flex-wrap: wrap;
     }
     .condition-row .cond-var-wrapper input {
       flex: 1;
@@ -105,6 +111,47 @@
       #editor-map-wrap { position: absolute; inset: 0; z-index: 1; }
       #editor-map { width: 100%; height: 100%; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       DIALOGUE MODAL STYLES
+       ═══════════════════════════════════════════════════════════════ */
+    #dialogue-modal { display: none; }
+    #dialogue-modal.active { display: flex; }
+    #dialogue-modal-inner {
+      display: flex;
+      flex-direction: column;
+    }
+    #dialogue-modal-content {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .dialogue-modal-field {
+      margin-bottom: 1rem;
+    }
+    .dialogue-modal-field label {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+    .dialogue-modal-field input,
+    .dialogue-modal-field textarea {
+      width: 100%;
+      padding: 0.5rem;
+      background: #000;
+      color: var(--text);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .dialogue-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
   </style>
 </head>
 <body>
@@ -116,18 +163,18 @@
 
   <div id="editor-app" style="display:none;">
     <div id="editor-toolbar">
-      <h2>🛠️ Editor GeoEscape</h2>
-      <button class="btn btn-sm btn-add" onclick="editor.newCampaign()">📄 Nuevo</button>
-      <button class="btn btn-sm btn-secondary" onclick="document.getElementById('importFile').click()">📂 Importar JSON</button>
+      <h2><i class="fa-solid fa-pen-ruler"></i> Editor GeoEscape</h2>
+      <button class="btn btn-sm btn-add" onclick="editor.newCampaign()"><i class="fa-solid fa-file"></i> Nuevo</button>
+      <button class="btn btn-sm btn-secondary" onclick="document.getElementById('importFile').click()"><i class="fa-solid fa-file-import"></i> Importar JSON</button>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="editor.importFile(event)">
-      <button class="btn btn-sm btn-primary" onclick="editor.exportJSON()">💾 Exportar JSON</button>
-      <button class="btn btn-sm btn-primary" style="background:#3498db;" onclick="editor.uploadCampaign()">☁️ Subir</button>
-      <button class="btn btn-sm btn-primary" style="background:#1abc9c;" onclick="editor.showMyCampaigns()">📥 Mis campañas</button>
-      <button class="btn btn-sm btn-primary" style="background:#9b59b6;" onclick="editor.testCampaign()">▶️ Probar Campaña</button>
+      <button class="btn btn-sm btn-primary" onclick="editor.exportJSON()"><i class="fa-solid fa-file-export"></i> Exportar JSON</button>
+      <button class="btn btn-sm btn-primary" style="background:#3498db;" onclick="editor.uploadCampaign()"><i class="fa-solid fa-cloud-arrow-up"></i> Subir</button>
+      <button class="btn btn-sm btn-primary" style="background:#1abc9c;" onclick="editor.showMyCampaigns()"><i class="fa-solid fa-cloud"></i> Mis casos</button>
+      <button class="btn btn-sm btn-primary" style="background:#9b59b6;" onclick="editor.testCampaign()"><i class="fa-solid fa-play"></i> Probar Caso</button>
 
-      <button class="btn btn-sm btn-secondary mobile-only" id="btn-toggle-sidebar" onclick="editor.toggleSidebar()">☰</button>
+      <button class="btn btn-sm btn-secondary mobile-only" id="btn-toggle-sidebar" onclick="editor.toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
       <button class="btn btn-sm btn-secondary mobile-only" id="btn-toggle-form" onclick="editor.toggleFormPanel()">✎</button>
-      <button class="btn btn-sm btn-secondary" onclick="window.location.href='index.html'">🏠 Volver al Inicio</button>
+      <button class="btn btn-sm btn-secondary" onclick="window.location.href='index.html'"><i class="fa-solid fa-house"></i> Volver al Inicio</button>
     </div>
     <div id="editor-main">
       <div id="editor-sidebar">
@@ -158,14 +205,44 @@
   <div id="cloud-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:2000;align-items:center;justify-content:center;">
     <div style="background:var(--bg-panel);border:2px solid var(--accent);border-radius:8px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;padding:1.5rem;position:relative;">
       <button onclick="document.getElementById('cloud-modal').style.display='none'" style="position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;">×</button>
-      <h3 id="cloud-modal-title" style="color:var(--accent);margin-bottom:1rem;">Mis Campañas</h3>
+      <h3 id="cloud-modal-title" style="color:var(--accent);margin-bottom:1rem;">Mis Casos</h3>
       <div id="cloud-modal-content"></div>
     </div>
   </div>
 
+  <!-- Template for Dialogue Modal (cloned by DialogueModal class) -->
+  <template id="dialogue-modal-template">
+    <div class="dialogue-modal-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:3000;align-items:center;justify-content:center;display:flex;">
+      <div class="dialogue-modal-content" style="background:var(--bg-panel);border:2px solid var(--accent);border-radius:8px;max-width:900px;width:95%;max-height:90vh;overflow-y:auto;padding:1.5rem;position:relative;">
+        <button class="dialogue-modal-close" style="position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;">×</button>
+        <h3 style="color:var(--accent);margin-bottom:1rem;"><i class="fa-solid fa-comments"></i> Editar Diálogo</h3>
+        <div class="dialogue-autosave-indicator" style="position:absolute;top:0.5rem;right:2.5rem;font-size:0.8rem;color:#2ecc71;opacity:0;transition:opacity 0.3s;">✓ Guardado</div>
+        <div class="dialogue-modal-body">
+          <div class="dialogue-modal-field">
+            <label>Texto del diálogo</label>
+            <input type="text" class="dialogue-text" style="width:100%;padding:0.5rem;background:#000;color:var(--text);border:1px solid var(--accent);border-radius:4px;" placeholder="¿Qué dice el personaje?">
+          </div>
+          <div class="dialogue-modal-field">
+            <label>Personaje (opcional)</label>
+            <input type="text" class="dialogue-speaker" style="width:100%;padding:0.5rem;background:#000;color:var(--text);border:1px solid var(--accent);border-radius:4px;" placeholder="Nombre del personaje">
+          </div>
+          <div class="dialogue-modal-field">
+            <label>Opciones de respuesta</label>
+            <div class="dialogue-options"></div>
+            <button type="button" class="btn btn-sm btn-add btn-add-option" style="margin-top:0.5rem;">+ Añadir opción</button>
+          </div>
+          <div class="dialogue-modal-actions" style="display:flex;justify-content:flex-end;gap:0.5rem;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.1);">
+            <button type="button" class="btn btn-primary btn-close">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="js/engine/assetResolver.js"></script>
   <script src="js/ui/components.js"></script>
+  <script src="js/editor/dialogueModal.js"></script>
   <script>
     (async function() {
       try {
@@ -204,5 +281,6 @@
       }
     })();
   </script>
+  <script src="js/cookie-banner.js"></script>
 </body>
 </html>

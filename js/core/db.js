@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es>
+
 const DB_NAME = 'GeoEscapeDB';
 const DB_VERSION = 1;
 
@@ -35,6 +38,26 @@ const DB = {
       const tx = this.db.transaction('campaigns', 'readonly');
       const req = tx.objectStore('campaigns').get(id);
       req.onsuccess = () => resolve(req.result ? req.result.json : null);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  async getAllCampaigns() {
+    await this.init();
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction('campaigns', 'readonly');
+      const req = tx.objectStore('campaigns').getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  async deleteCampaign(id) {
+    await this.init();
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction('campaigns', 'readwrite');
+      const req = tx.objectStore('campaigns').delete(id);
+      req.onsuccess = () => resolve();
       req.onerror = () => reject(req.error);
     });
   },

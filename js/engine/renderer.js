@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es>
+
 /* global CampaignParser, Inventory, TextOverlay, StateMachine, GeoManager, GpsBlockMap, LocationSimulator, UIComponents, DB */
 class GameEngine {
   constructor(campaign) {
@@ -22,6 +25,7 @@ class GameEngine {
     this.ctx = this.canvas.getContext('2d');
     this._itemIconCache = {}; // Cache for SVG item icons
     this._decorIconCache = {}; // Cache for SVG decor icons
+    this._npcIconCache = {}; // Cache for SVG NPC icons
     this._bgImageCache = {}; // Cache for background images
     this.resize();
     window.addEventListener('resize', () => this.resize());
@@ -100,8 +104,11 @@ class GameEngine {
   }
 
   resize() {
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    const container = document.getElementById('game-main-area');
+    const w = container ? container.clientWidth : window.innerWidth;
+    const h = container ? container.clientHeight : window.innerHeight;
+    this.canvas.width = w;
+    this.canvas.height = h;
     if (this.location) this.render();
   }
 
@@ -165,8 +172,11 @@ class GameEngine {
   }
 
   async _checkTestModePermission() {
+    const currentCampaign = localStorage.getItem('ge_current_campaign');
+    // Allow test mode for local editor campaigns (no cloud UUID needed)
+    if (currentCampaign === 'editor_test') return true;
+
     const cloudUuid = localStorage.getItem('ge_cloud_uuid');
-    // If no cloud UUID, it's a local/imported campaign, cannot test
     if (!cloudUuid) return false;
     try {
       const res = await fetch('api/campaigns/check-owner.php?uuid=' + encodeURIComponent(cloudUuid), {
@@ -379,11 +389,6 @@ class GameEngine {
         this.isProcessingQueue = false;
         this._processNextAction();
         break;
-      case 'play_audio':
-        // Placeholder for audio logic
-        this.isProcessingQueue = false;
-        this._processNextAction();
-        break;
       case 'trigger_event': {
         const evt = this.campaign.events?.find(e => e.id === action.event_id);
         if (evt) {
@@ -401,9 +406,11 @@ class GameEngine {
       case 'dialogue':
         this.state.set('dialogue');
         this.dialogueBox.onComplete = (actions) => {
+          // ENCOLAR en actionQueue en lugar de ejecutar directamente
           if (actions && actions.length > 0) {
-            this.executeActions(actions);
+            this.actionQueue.unshift(...actions);
           }
+          this.isProcessingQueue = false;
           this._processNextAction();
         };
         this.dialogueBox.show(action.text, action.speaker, action.options);
@@ -413,7 +420,7 @@ class GameEngine {
         if (action.text) this.textOverlay.show(action.text);
         if (this.isTestMode) {
           setTimeout(() => {
-            if (confirm('🎮 Campaña terminada (modo test). ¿Volver al editor?')) {
+            if (confirm('Caso terminado (modo test). ¿Volver al editor?')) {
               window.location.href = 'editor.html';
             }
           }, 1500);
@@ -706,18 +713,52 @@ class GameEngine {
     ctx.stroke();
   }
 
+  _drawNpcIcon(ctx, iconName, cx, cy, size) {
+    const iconUrl = AssetResolver.npcIcon(iconName);
+
+    if (this._npcIconCache[iconUrl]) {
+      const img = this._npcIconCache[iconUrl];
+      if (img.complete && img.naturalWidth > 0) {
+        ctx.drawImage(img, cx - size/2, cy - size/2, size, size);
+        return;
+      }
+    }
+
+    // Load and cache
+    const img = new Image();
+    img.onload = () => {
+      this._npcIconCache[iconUrl] = img;
+      this.render(); // Redraw when loaded
+    };
+    img.onerror = () => {
+      console.warn('Failed to load NPC icon:', iconUrl);
+    };
+    img.src = iconUrl;
+    this._npcIconCache[iconUrl] = img;
+
+    // Draw placeholder while loading
+    ctx.beginPath();
+    ctx.arc(cx, cy, size/2, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(52, 152, 219, 0.4)';
+    ctx.fill();
+    ctx.strokeStyle = '#3498db';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
   drawNPC(ctx, inst, globalNpc) {
     const p = inst.position || {x: 100, y: 100};
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 20, 0, Math.PI * 2);
-    ctx.fillStyle = '#3498db';
-    ctx.fill();
-    ctx.strokeStyle = '#ecf0f1';
-    ctx.stroke();
+    const npcScale = inst.scale || 1.0;
+    const size = 30 * npcScale;
+    const iconName = globalNpc.icon || 'merchant';
 
+    // Draw NPC icon
+    this._drawNpcIcon(ctx, iconName, p.x, p.y, size);
+
+    // Draw name below
     ctx.fillStyle = '#ecf0f1';
     ctx.font = '12px sans-serif';
-    ctx.fillText(globalNpc.name || 'NPC', p.x - 20, p.y - 28);
+    ctx.fillText(globalNpc.name || 'NPC', p.x - 20, p.y + size/2 + 14);
   }
 
   handleClick(e) {
@@ -776,7 +817,7 @@ class GameEngine {
   _evaluateSingleCondition(cond) {
     if (!cond) return true;
     if (cond.has_item) return this.inventory.has(cond.has_item);
-    if (cond.var !== undefined) {
+    if (cond.var !== undefined && cond.var !== null && cond.var !== '') {
       const varValue = this.variables[cond.var];
       return String(varValue).toLowerCase() === String(cond.eq).toLowerCase();
     }
@@ -831,12 +872,14 @@ class GameEngine {
   }
 
   toggleInventory() {
+    if (this.dialogueBox.isOpen || this.textOverlay.isOpen) return;
     const panel = document.getElementById('inventory-panel');
     panel.classList.toggle('hidden');
     this.inventory.render();
   }
 
   toggleMenu() {
+    if (this.dialogueBox.isOpen || this.textOverlay.isOpen) return;
     const panel = document.getElementById('menu-panel');
     panel.classList.toggle('hidden');
   }
@@ -846,6 +889,7 @@ class GameEngine {
   }
 
   exitToMap() {
+    if (this.dialogueBox.isOpen || this.textOverlay.isOpen) return;
     this.state.set('gps_block');
     this.location = null;  // Clear current location when exiting to map
     const btnExit = document.getElementById('btn-exit');
@@ -943,7 +987,7 @@ class GameEngine {
     // For now, we store the cloud UUID in localStorage when downloading.
     const cloudUuid = localStorage.getItem('ge_cloud_uuid');
     if (!cloudUuid) {
-      document.getElementById('vote-msg').textContent = 'No se puede votar: campaña no descargada desde la nube.';
+      document.getElementById('vote-msg').textContent = 'No se puede votar: caso no descargado desde la nube.';
       return;
     }
     try {
@@ -955,12 +999,12 @@ class GameEngine {
       });
       const data = await res.json();
       if (data.success) {
-        document.getElementById('vote-msg').textContent = `✅ ¡Gracias! Voto registrado. Votos totales: ${data.vote_count}`;
+        document.getElementById('vote-msg').textContent = `¡Gracias! Voto registrado. Votos totales: ${data.vote_count}`;
       } else {
-        document.getElementById('vote-msg').textContent = '❌ ' + (data.error || 'Error al votar');
+        document.getElementById('vote-msg').textContent = 'Error: ' + (data.error || 'Error al votar');
       }
     } catch (e) {
-      document.getElementById('vote-msg').textContent = '❌ Error de red: ' + e.message;
+      document.getElementById('vote-msg').textContent = 'Error de red: ' + e.message;
     }
   }
 }

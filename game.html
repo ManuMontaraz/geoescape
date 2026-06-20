@@ -1,23 +1,29 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es> -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="robots" content="noindex, nofollow">
   <title>GeoEscape - Juego</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
 <body class="game-body">
   <div id="game-container">
-    <canvas id="game-canvas"></canvas>
-    <div id="save-indicator" class="hidden"></div>
-    
-    <div id="ui-layer">
-      <div id="top-bar">
-        <button id="btn-inv" class="ui-btn">🎒 Inventario</button>
-        <button id="btn-exit" class="ui-btn">🚪 Salir</button>
-        <button id="btn-menu" class="ui-btn">☰ Menú</button>
-      </div>
+    <div id="game-top-bar">
+      <button id="btn-inv" class="ui-btn"><i class="fa-solid fa-box-open"></i> Inventario</button>
+      <button id="btn-exit" class="ui-btn"><i class="fa-solid fa-door-open"></i> Salir</button>
+      <button id="btn-menu" class="ui-btn"><i class="fa-solid fa-bars"></i> Menú</button>
+    </div>
+    <div id="game-main-area">
+      <canvas id="game-canvas"></canvas>
+      <div id="save-indicator" class="hidden"></div>
+      
+      <div id="ui-layer">
       <div id="text-overlay" class="hidden">
         <p id="text-content"></p>
         <button id="text-close" class="ui-btn">Continuar</button>
@@ -43,16 +49,16 @@
       </div>
       <div id="menu-panel" class="hidden">
         <h3>Menú</h3>
-        <button class="ui-btn" onclick="window.game.saveGame()">💾 Guardar</button>
-        <button class="ui-btn" id="menu-fork-btn" style="display:none;" onclick="window.game.goToEditor()">✏️ Fork</button>
-        <button class="ui-btn" onclick="window.location.href='index.html'">🏠 Salir al Inicio</button>
-        <button class="ui-btn" id="menu-close">↩ Cerrar</button>
+        <button class="ui-btn" onclick="window.game.saveGame()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+        <button class="ui-btn" id="menu-fork-btn" style="display:none;" onclick="window.game.goToEditor()"><i class="fa-solid fa-code-branch"></i> Fork</button>
+        <button class="ui-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-house"></i> Salir al Inicio</button>
+        <button class="ui-btn" id="menu-close"><i class="fa-solid fa-xmark"></i> Cerrar</button>
       </div>
       <!-- GPS Waiting Panel -->
       <div id="gps-waiting-panel" class="hidden">
         <div class="gps-waiting-content">
           <div class="gps-spinner"></div>
-          <h2>🛰️ Buscando señal GPS...</h2>
+          <h2><i class="fa-solid fa-satellite"></i> Buscando señal GPS...</h2>
           <p>Por favor, asegúrate de estar al aire libre y que el GPS está activado.</p>
           <div class="gps-countdown">Tiempo restante: <span id="gps-timer">60</span>s</div>
           <button class="ui-btn" onclick="window.location.href='index.html'" style="margin-top:1rem;">Cancelar y Volver al Inicio</button>
@@ -61,7 +67,7 @@
       <!-- GPS Timeout Fail Panel -->
       <div id="gps-fail-panel" class="hidden">
         <div class="gps-waiting-content">
-          <h2 style="color:#e74c3c;">❌ No se ha encontrado GPS</h2>
+          <h2 style="color:#e74c3c;"><i class="fa-solid fa-xmark"></i> No se ha encontrado GPS</h2>
           <p>No se pudo obtener tu ubicación tras 60 segundos de espera.</p>
           <p style="color:var(--text-muted);font-size:0.9rem;">Asegúrate de que:</p>
           <ul style="color:var(--text-muted);font-size:0.85rem;text-align:left;display:inline-block;margin:0.5rem 0;">
@@ -69,27 +75,27 @@
             <li>Has concedido permisos de ubicación</li>
             <li>Estás en una zona con cobertura GPS</li>
           </ul>
-          <button class="ui-btn" onclick="window.location.href='index.html'" style="margin-top:1rem;">🏠 Volver al Inicio</button>
+          <button class="ui-btn" onclick="window.location.href='index.html'" style="margin-top:1rem;"><i class="fa-solid fa-house"></i> Volver al Inicio</button>
         </div>
       </div>
 
       <div id="gps-block-panel" class="hidden">
         <div id="gps-top-bar">
-          <button id="btn-gps-inv" class="ui-btn">🎒 Inventario</button>
-          <button id="btn-gps-menu" class="ui-btn">☰ Menú</button>
+          <button id="btn-gps-inv" class="ui-btn"><i class="fa-solid fa-box-open"></i> Inventario</button>
+          <button id="btn-gps-menu" class="ui-btn"><i class="fa-solid fa-bars"></i> Menú</button>
         </div>
         <div id="gps-map"></div>
         <div id="gps-bar-normal" class="hidden">
           <p id="gps-distance-normal">Obteniendo GPS...</p>
           <div class="gps-bar-actions">
-            <button class="ui-btn" id="btn-gps-nearby" onclick="window.game.gpsMap.showNearby();">📍 Ver Cercanos</button>
+            <button class="ui-btn" id="btn-gps-nearby" onclick="window.game.gpsMap.showNearby();"><i class="fa-solid fa-map-pin"></i> Ver Cercanos</button>
           </div>
         </div>
         <div id="gps-bar-test" class="hidden">
           <p id="gps-distance-test">Obteniendo GPS...</p>
           <div class="gps-bar-actions">
-            <button class="ui-btn" onclick="window.game.openSimulator()">🧪 Simular</button>
-            <button class="ui-btn" onclick="window.location.href='editor.html'">✏️ Volver al Editor</button>
+            <button class="ui-btn" onclick="window.game.openSimulator()"><i class="fa-solid fa-flask"></i> Simular</button>
+            <button class="ui-btn" onclick="window.location.href='editor.html'"><i class="fa-solid fa-pen-ruler"></i> Volver al Editor</button>
           </div>
         </div>
       </div>
@@ -98,12 +104,12 @@
       <div id="simulator-panel" class="hidden">
         <div style="display:flex;flex-direction:column;height:100%;width:100%;">
           <div style="padding:0.5rem;background:var(--bg-panel);display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--accent);">
-            <h3 style="color:var(--accent);margin:0;font-size:1rem;">🗺️ Simulador GPS</h3>
+            <h3 style="color:var(--accent);margin:0;font-size:1rem;"><i class="fa-solid fa-map"></i> Simulador GPS</h3>
             <div>
               <span id="sim-dist-text" style="color:var(--text);font-size:0.85rem;margin-right:1rem;"></span>
-              <button class="ui-btn" id="sim-btn-enter" onclick="window.game.simulator.applyAndEnter()">✅ Entrar</button>
-              <button class="ui-btn" onclick="window.game.simulator.enableTeleport()">🎯 Teletransportar</button>
-              <button class="ui-btn" onclick="window.game.simulator.close()">✖ Cerrar</button>
+              <button class="ui-btn" id="sim-btn-enter" onclick="window.game.simulator.applyAndEnter()"><i class="fa-solid fa-check"></i> Entrar</button>
+              <button class="ui-btn" onclick="window.game.simulator.enableTeleport()"><i class="fa-solid fa-bullseye"></i> Teletransportar</button>
+              <button class="ui-btn" onclick="window.game.simulator.close()"><i class="fa-solid fa-xmark"></i> Cerrar</button>
             </div>
           </div>
           <div id="simulator-map" style="flex:1;background:#222;"></div>
@@ -126,18 +132,19 @@
       <!-- Finish / Vote Modal -->
       <div id="finish-modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:3000;display:flex;align-items:center;justify-content:center;">
         <div style="background:var(--bg-panel);border:2px solid var(--accent);border-radius:8px;max-width:400px;width:90%;padding:2rem;text-align:center;">
-          <h2 style="color:var(--accent);margin-bottom:1rem;">🏁 ¡Campaña completada!</h2>
+          <h2 style="color:var(--accent);margin-bottom:1rem;"><i class="fa-solid fa-flag-checkered"></i> ¡Caso completado!</h2>
           <p style="color:var(--text-muted);margin-bottom:1.5rem;">¿Qué te ha parecido esta experiencia?</p>
           <div style="display:flex;justify-content:center;gap:1rem;margin-bottom:1.5rem;">
-            <button class="ui-btn" style="font-size:1.5rem;" onclick="window.game.voteCampaign('up')" title="Me ha gustado">👍</button>
-            <button class="ui-btn" style="font-size:1.5rem;" onclick="window.game.voteCampaign('down')" title="No me ha gustado">👎</button>
+            <button class="ui-btn" style="font-size:1.5rem;" onclick="window.game.voteCampaign('up')" title="Me ha gustado"><i class="fa-solid fa-thumbs-up"></i></button>
+            <button class="ui-btn" style="font-size:1.5rem;" onclick="window.game.voteCampaign('down')" title="No me ha gustado"><i class="fa-solid fa-thumbs-down"></i></button>
           </div>
           <p id="vote-msg" style="color:var(--text-muted);font-size:0.85rem;min-height:1.5rem;"></p>
           <div style="margin-top:1.5rem;">
-            <button class="ui-btn" onclick="window.location.href='index.html'">🏠 Volver al Inicio</button>
+            <button class="ui-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-house"></i> Volver al Inicio</button>
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 
@@ -172,16 +179,18 @@
 
         const savedId = localStorage.getItem('ge_saved_campaign');
         const hasSave = savedId === campaign.campaign_id && await DB.getProgress(savedId);
-        if (hasSave && confirm('Tienes una partida guardada. ¿Quieres continuar donde la dejaste?')) {
+        const isTestMode = new URLSearchParams(window.location.search).has('test');
+        if (!isTestMode && hasSave && confirm('Tienes una partida guardada. ¿Quieres continuar donde la dejaste?')) {
           await window.game.loadGame();
         } else {
           await window.game.start();
         }
       } catch (e) {
         console.error(e);
-        alert('Error cargando campaña: ' + e.message);
+        alert('Error cargando caso: ' + e.message);
       }
     })();
   </script>
+  <script src="js/cookie-banner.js"></script>
 </body>
 </html>

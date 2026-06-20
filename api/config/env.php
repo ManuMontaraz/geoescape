@@ -1,4 +1,7 @@
 <?php
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es>
+
 // GeoEscape - Environment Loader
 // Safe .env parser that doesn't use parse_ini_file()
 

@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /
+Allow: /index.html
+Allow: /css/
+Allow: /js/
+Allow: /assets/
+Sitemap: https://escape.manumontaraz.es/sitemap.xml

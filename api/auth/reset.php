@@ -1,4 +1,7 @@
 <?php
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es>
+
 require_once __DIR__ . '/../config/database.php';
 
 require_once __DIR__ . '/../config/env.php';
@@ -8,6 +11,7 @@ $baseUrl = "https://{$domain}";
 
 // Override JSON header from database.php
 header("Content-Type: text/html; charset=utf-8");
+header("X-Robots-Tag: noindex, nofollow");
 
 $token = $_GET['token'] ?? ($_POST['token'] ?? '');
 $password = $_POST['password'] ?? '';
@@ -74,11 +78,11 @@ if (empty($token)) {
                 
                 $mode = 'success';
                 $title = 'Contraseña Restablecida';
-                $message = '✅ Contraseña restablecida';
+                $message = 'Contraseña restablecida';
                 $subMessage = 'Tu contraseña ha sido actualizada correctamente. Redirigiendo...';
                 $bgColor = '#27ae60';
                 $bgDark = '#1e8449';
-                $icon = '✅';
+                $icon = '<i class="fa-solid fa-check"></i>';
                 $buttonText = 'Ir al inicio';
                 $redirectMeta = '<meta http-equiv="refresh" content="3;url=' . $baseUrl . '/index.html">';
             }
@@ -100,6 +104,7 @@ if (empty($token)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php echo $redirectMeta; ?>
     <title><?php echo $title; ?> - GeoEscape</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/styles.css">
     <style>
         * {

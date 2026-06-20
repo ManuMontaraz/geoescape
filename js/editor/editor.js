@@ -26,6 +26,9 @@ class CampaignEditor {
     this._decorIconCache = {}; // Cache for SVG decor icons in scene canvas
     this._npcIconCache = {}; // Cache for NPC sprites in scene canvas
     this._cryptexEditorPositions = null; // Editor positions for cryptex minigame
+    this._dialogueIdCounter = 0; // Counter for unique nested dialogue IDs
+    this._actionsMap = new Map(); // Map for storing actions arrays by container ID
+    this._blockMap = new Map(); // Map for storing action blocks by container ID
     this.initMap();
     
     // Try to load saved campaign from localStorage (e.g., after testing)
@@ -52,6 +55,10 @@ class CampaignEditor {
     this.campaign.items.forEach(item => this.updateItemMarker(item));
     this.campaign.npcs.forEach(npc => this.updateNpcMarker(npc));
     this.renderSidebar();
+  }
+
+  getDialogueId() {
+    return `dialogue-opts-${this._dialogueIdCounter++}`;
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -160,6 +167,23 @@ class CampaignEditor {
     return null;
   }
 
+  _validateSceneSelection(loc) {
+    if (!this._selectedSceneElement) return true;
+    const el = this._selectedSceneElement;
+    if (el.type === 'area') {
+      if (!loc.clickable_areas || !loc.clickable_areas[el.index]) {
+        this._selectedSceneElement = null;
+        return false;
+      }
+    } else if (el.type === 'npc') {
+      if (!loc.npc_instances || !loc.npc_instances[el.index]) {
+        this._selectedSceneElement = null;
+        return false;
+      }
+    }
+    return true;
+  }
+
   _calcAbsoluteFromRelative(lat, lng, bearingDeg, distanceM) {
     const R = 6371000;
     const toRad = d => d * Math.PI / 180;
@@ -195,12 +219,15 @@ class CampaignEditor {
   // ═══════════════════════════════════════════════════════════════
 
   newCampaign() {
+    // Clear cloud UUID when creating a new campaign
+    localStorage.removeItem('ge_cloud_uuid');
+    
     this.campaign = {
       schema_version: '1.0',
       campaign_id: 'nueva_campana_' + Date.now(),
       metadata: {
-        title: 'Nueva Campaña',
-        description: 'Descripción de tu campaña',
+        title: 'Nuevo Caso',
+        description: 'Descripción de tu caso',
         author: window._currentUsername || 'Anónimo',
         version: '1.0.0',
         language: 'es',
@@ -261,6 +288,8 @@ class CampaignEditor {
             }
           }
         }
+        // Clear cloud UUID when importing a file (it's a new local copy)
+        localStorage.removeItem('ge_cloud_uuid');
         this.selectedLocId = null;
         this.selectedItemId = null;
         this.selectedNpcId = null;
@@ -279,24 +308,70 @@ class CampaignEditor {
     reader.readAsText(file);
   }
 
+  _cleanCampaignForJSON(obj) {
+    if (obj === null || typeof obj !== 'object') return obj;
+    if (Array.isArray(obj)) {
+      return obj.map(item => this._cleanCampaignForJSON(item)).filter(item => item !== undefined);
+    }
+    const clean = {};
+    for (const key of Object.keys(obj)) {
+      if (key.startsWith('_')) continue; // Skip internal properties
+      const val = obj[key];
+      if (val === undefined || typeof val === 'function') continue;
+      clean[key] = this._cleanCampaignForJSON(val);
+    }
+    return clean;
+  }
+
+  _getCleanCampaignJSON() {
+    const clean = this._cleanCampaignForJSON(this.campaign);
+    try {
+      const jsonStr = JSON.stringify(clean, null, 2);
+      JSON.parse(jsonStr); // Verify valid
+      return jsonStr;
+    } catch (e) {
+      console.error('Campaign JSON invalid:', e);
+      throw new Error('JSON inválido: ' + e.message);
+    }
+  }
+
   exportJSON() {
-    const blob = new Blob([JSON.stringify(this.campaign, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = (this.campaign.campaign_id || 'campana') + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    this.saveForm();
+    this.closeAllModals();
+    try {
+      const jsonStr = this._getCleanCampaignJSON();
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = (this.campaign.campaign_id || 'campana') + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert('❌ Error al exportar: ' + e.message);
+    }
   }
 
   testCampaign() {
-    if (confirm('¿Guardar cambios antes de probar?')) {
-      this.saveForm();
+    this.saveForm();
+    this.closeAllModals();
+    try {
+      const jsonStr = this._getCleanCampaignJSON();
+      localStorage.setItem('ge_campaign_json', jsonStr);
+      localStorage.setItem('ge_current_campaign', 'editor_test');
+      localStorage.setItem('ge_saved_campaign', this.campaign.campaign_id);
+      window.location.href = 'game.html?test=1';
+    } catch (e) {
+      alert('❌ Error al probar: ' + e.message);
     }
-    localStorage.setItem('ge_campaign_json', JSON.stringify(this.campaign));
-    localStorage.setItem('ge_current_campaign', 'editor_test');
-    localStorage.setItem('ge_saved_campaign', this.campaign.campaign_id);
-    window.location.href = 'game.html?test=1';
+  }
+
+  closeAllModals() {
+    // Close all open dialogue modals to ensure all data is saved
+    document.querySelectorAll('.dialogue-modal-overlay').forEach(modal => {
+      const closeBtn = modal.querySelector('.dialogue-modal-close');
+      if (closeBtn) closeBtn.click();
+    });
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -317,16 +392,32 @@ class CampaignEditor {
   }
 
   async uploadCampaign() {
+    this.saveForm();
+    this.closeAllModals();
     this.saveConfigForm();
     if (!this._hasFinishCampaign(this.campaign)) {
-      alert('❌ No puedes subir una campaña sin final. Añade una acción "Terminar campaña" en algún lugar (por ejemplo, al usar un item, al entrar a una ubicación, al interactuar con un decorativo o NPC).');
+      alert('❌ No puedes subir un caso sin final. Añade una acción "Terminar caso" en algún lugar (por ejemplo, al usar un item, al entrar a una ubicación, al interactuar con un decorativo o NPC).');
       return;
     }
     // Ensure campaign has a UUID as its ID
-    if (!this.campaign.campaign_id || !this.campaign.campaign_id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+    // First check if we already have a cloud UUID from a previous upload
+    const savedUuid = localStorage.getItem('ge_cloud_uuid');
+    if (savedUuid && savedUuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+      this.campaign.campaign_id = savedUuid;
+    } else if (!this.campaign.campaign_id || !this.campaign.campaign_id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
       this.campaign.campaign_id = this._generateUUID();
-      const el = document.getElementById('form_campaign_id');
-      if (el) el.value = this.campaign.campaign_id;
+    }
+    const el = document.getElementById('form_campaign_id');
+    if (el) el.value = this.campaign.campaign_id;
+    // Validate JSON before sending
+    try {
+      const jsonStr = JSON.stringify(this.campaign);
+      JSON.parse(jsonStr); // Verify it's valid
+      console.log('Campaign JSON valid, length:', jsonStr.length);
+    } catch (jsonError) {
+      console.error('JSON invalid:', jsonError);
+      alert('❌ Error: El JSON del caso es inválido. Revisa los diálogos anidados u otras acciones.\nError: ' + jsonError.message);
+      return;
     }
     try {
       const res = await fetch('api/campaigns/save.php', {
@@ -338,7 +429,7 @@ class CampaignEditor {
           title: this.campaign.metadata.title,
           description: this.campaign.metadata.description || '',
           campaign_json: JSON.stringify(this.campaign),
-          gps_type: this.campaign.gps_type || 'relative',
+          gps_type: (this.campaign.gps_type === 'absolute' ? 'absolute' : 'relative'),
           is_public: this.campaign.is_public || false,
           origin_lat: this.campaign.origin?.lat || null,
           origin_lng: this.campaign.origin?.lng || null
@@ -349,7 +440,7 @@ class CampaignEditor {
         // Guardar JSON actualizado
         localStorage.setItem('ge_campaign_json', JSON.stringify(this.campaign));
         localStorage.setItem('ge_cloud_uuid', this.campaign.campaign_id);
-        alert(`☁️ Campaña subida correctamente.\nUUID: ${this.campaign.campaign_id}`);
+        alert(`☁️ Caso subido correctamente.\nUUID: ${this.campaign.campaign_id}`);
       } else {
         alert('❌ Error al subir: ' + (data.error || 'Error desconocido'));
       }
@@ -362,7 +453,7 @@ class CampaignEditor {
     const modal = document.getElementById('cloud-modal');
     const content = document.getElementById('cloud-modal-content');
     const title = document.getElementById('cloud-modal-title');
-    title.textContent = '📥 Mis Campañas en la Nube';
+    title.textContent = '📥 Mis Casos en la Nube';
     content.innerHTML = '<p style="color:var(--text-muted);">Cargando...</p>';
     modal.style.display = 'flex';
     try {
@@ -373,7 +464,7 @@ class CampaignEditor {
         return;
       }
       if (data.campaigns.length === 0) {
-        content.innerHTML = '<p style="color:var(--text-muted);">No tienes campañas subidas. ¡Crea una y súbela! ☁️</p>';
+        content.innerHTML = '<p style="color:var(--text-muted);">No tienes casos subidos. ¡Crea uno y súbelo! ☁️</p>';
         return;
       }
       let html = '<div style="display:flex;flex-direction:column;gap:0.8rem;">';
@@ -405,7 +496,7 @@ class CampaignEditor {
   }
 
   async loadCloudCampaign(uuid) {
-    if (!confirm('⚠️ Cargar esta campaña sobrescribirá la actual. ¿Continuar?')) return;
+    if (!confirm('⚠️ Cargar este caso sobrescribirá el actual. ¿Continuar?')) return;
     try {
       const res = await fetch(`api/campaigns/load.php?uuid=${encodeURIComponent(uuid)}`, { credentials: 'same-origin' });
       const data = await res.json();
@@ -426,7 +517,7 @@ class CampaignEditor {
       this.clearMap();
       this._afterLoad();
       document.getElementById('cloud-modal').style.display = 'none';
-      alert('✅ Campaña cargada desde la nube');
+      alert('✅ Caso cargado desde la nube');
     } catch (e) {
       alert('❌ Error: ' + e.message);
     }
@@ -481,7 +572,7 @@ class CampaignEditor {
   }
 
   async deleteCloudCampaign(uuid) {
-    if (!confirm('🗑️ ¿Eliminar esta campaña de la nube? No se puede deshacer.')) return;
+    if (!confirm('🗑️ ¿Eliminar este caso de la nube? No se puede deshacer.')) return;
     try {
       const res = await fetch('api/campaigns/delete.php', {
         method: 'POST',
@@ -491,7 +582,7 @@ class CampaignEditor {
       });
       const data = await res.json();
       if (data.success) {
-        alert('✅ Campaña eliminada');
+        alert('✅ Caso eliminado');
         this.showMyCampaigns();
       } else {
         alert('❌ ' + (data.error || 'Error al eliminar'));
@@ -516,7 +607,7 @@ class CampaignEditor {
     this.campaign = JSON.parse(fixedStr);
     this.clearMap();
     this._afterLoad();
-    alert(`🍴 Campaña copiada. Nuevo ID: ${newId}`);
+    alert(`🍴 Caso copiado. Nuevo ID: ${newId}`);
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -593,7 +684,7 @@ class CampaignEditor {
       div.style.padding = '1rem';
       div.style.color = 'var(--text-muted)';
       div.style.fontSize = '0.85rem';
-      div.innerHTML = 'Edita los metadatos de la campaña en el panel derecho.';
+      div.innerHTML = 'Edita los metadatos del caso en el panel derecho.';
       container.appendChild(div);
       this.renderForm();
       return;
@@ -988,9 +1079,9 @@ class CampaignEditor {
 
   _attachAutoSave() {
     const form = document.getElementById('editor-form');
-    if (!form) return;
+    const root = form || document.body;
     let debounceTimer;
-    form.querySelectorAll('input, textarea, select').forEach(el => {
+    root.querySelectorAll('input, textarea, select').forEach(el => {
       if (el._autoSaveAttached) return;
       el._autoSaveAttached = true;
       if (el.type === 'checkbox' || el.tagName === 'SELECT') {
@@ -1579,6 +1670,7 @@ class CampaignEditor {
     const el = this._selectedSceneElement;
     if (el.type === 'area') {
       const area = loc.clickable_areas[el.index];
+      if (!area) return null;
       const c = area.coords;
       if (area.shape === 'circle') {
         const hcx = c.x + c.r;
@@ -1591,6 +1683,7 @@ class CampaignEditor {
       }
     } else if (el.type === 'npc') {
       const inst = loc.npc_instances[el.index];
+      if (!inst) return null;
       const p = inst.position || { x: 0, y: 0 };
       const npcScale = inst.scale || 1.0;
       const size = 30 * npcScale;
@@ -1620,10 +1713,12 @@ class CampaignEditor {
       let sw = 0, sh = 0;
       if (el.type === 'area' && loc) {
         const area = loc.clickable_areas[el.index];
+        if (!area) { this._selectedSceneElement = null; return; }
         if (area.shape === 'rect') { sw = area.coords.w; sh = area.coords.h; }
         else { sw = area.coords.r; sh = area.coords.r; }
       } else if (el.type === 'npc' && loc) {
         const inst = loc.npc_instances[el.index];
+        if (!inst) { this._selectedSceneElement = null; return; }
         sw = (inst.scale || 1.0) * 30;
       }
       this._dragStart = { cx, cy, sx: cx, sy: cy, sw, sh };
@@ -1663,6 +1758,7 @@ class CampaignEditor {
 
       if (el.type === 'area') {
         const area = loc.clickable_areas[el.index];
+        if (!area) { this._selectedSceneElement = null; return; }
         if (area.shape === 'rect') {
           area.coords.x = Math.round(this._dragStart.sx + sdx - area.coords.w / 2);
           area.coords.y = Math.round(this._dragStart.sy + sdy - area.coords.h / 2);
@@ -1672,6 +1768,7 @@ class CampaignEditor {
         }
       } else if (el.type === 'npc') {
         const inst = loc.npc_instances[el.index];
+        if (!inst) { this._selectedSceneElement = null; return; }
         inst.position.x = Math.round(this._dragStart.sx + sdx);
         inst.position.y = Math.round(this._dragStart.sy + sdy);
       }
@@ -1683,6 +1780,7 @@ class CampaignEditor {
 
       if (el.type === 'area') {
         const area = loc.clickable_areas[el.index];
+        if (!area) { this._selectedSceneElement = null; return; }
         if (area.shape === 'circle') {
           const cursorX = this._dragStart.sx + sdx;
           const cursorY = this._dragStart.sy + sdy;
@@ -1696,6 +1794,7 @@ class CampaignEditor {
         }
       } else if (el.type === 'npc') {
         const inst = loc.npc_instances[el.index];
+        if (!inst) { this._selectedSceneElement = null; return; }
         const newSize = Math.max(10, this._dragStart.sw + sdx);
         inst.scale = Math.round((newSize / 30) * 100) / 100; // Round to 2 decimals
         if (inst.scale < 0.2) inst.scale = 0.2; // Minimum scale
@@ -1715,6 +1814,7 @@ class CampaignEditor {
     // Update any visible coord inputs in the properties panel
     const loc = this.campaign.locations.find(l => l.id === this.selectedLocId);
     if (!loc || !this._selectedSceneElement) return;
+    if (!this._validateSceneSelection(loc)) return;
     const el = this._selectedSceneElement;
     if (el.type === 'area') {
       const area = loc.clickable_areas[el.index];
@@ -1745,6 +1845,10 @@ class CampaignEditor {
     if (!container) return;
     const loc = this.campaign.locations.find(l => l.id === this.selectedLocId);
     if (!loc || !this._selectedSceneElement) {
+      container.innerHTML = '';
+      return;
+    }
+    if (!this._validateSceneSelection(loc)) {
       container.innerHTML = '';
       return;
     }
@@ -1821,6 +1925,7 @@ class CampaignEditor {
   updateSceneFromProps() {
     const loc = this.campaign.locations.find(l => l.id === this.selectedLocId);
     if (!loc || !this._selectedSceneElement) return;
+    if (!this._validateSceneSelection(loc)) return;
     const el = this._selectedSceneElement;
     if (el.type === 'area') {
       const area = loc.clickable_areas[el.index];
@@ -1848,6 +1953,7 @@ class CampaignEditor {
       area.icon = decorVal || null;
     } else if (el.type === 'npc') {
       const inst = loc.npc_instances[el.index];
+      if (!inst) { this._selectedSceneElement = null; return; }
       inst.ref = document.getElementById('prop_npref').value;
       inst.position.x = parseInt(document.getElementById('prop_npx').value) || 0;
       inst.position.y = parseInt(document.getElementById('prop_npy').value) || 0;
@@ -2118,7 +2224,7 @@ class CampaignEditor {
     const originDisplay = gpsType === 'absolute' ? '' : 'display:none;';
 
     document.getElementById('editor-form').innerHTML = `
-      <h3 style="color:var(--accent);margin-bottom:1rem;">Configuración de Campaña</h3>
+      <h3 style="color:var(--accent);margin-bottom:1rem;">Configuración del Caso</h3>
 
       <div class="editor-group"><label>Campaign ID (readonly)</label><input type="text" id="form_campaign_id" value="${this._esc(this.campaign.campaign_id)}" disabled></div>
       <div class="editor-group"><label>Título</label><input type="text" id="form_title" value="${this._esc(m.title)}"></div>
@@ -2156,7 +2262,7 @@ class CampaignEditor {
 
       <div style="display:flex;gap:0.5rem;margin-top:1rem;">
         <button class="btn btn-sm btn-primary" style="flex:1;background:#3498db;" onclick="editor.uploadCampaign()">☁️ Subir</button>
-        <button class="btn btn-sm btn-primary" style="flex:1;background:#1abc9c;" onclick="editor.showMyCampaigns()">📥 Mis campañas</button>
+        <button class="btn btn-sm btn-primary" style="flex:1;background:#1abc9c;" onclick="editor.showMyCampaigns()">📥 Mis casos</button>
       </div>
       <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
         <button class="btn btn-sm btn-secondary" style="flex:1;" onclick="editor.forkCampaign()">🍴 Fork (copiar)</button>
@@ -2415,6 +2521,7 @@ class CampaignEditor {
   renderActions(containerId, actions, options = {}) {
     const container = document.getElementById(containerId);
     if (!container) return;
+    this._actionsMap.set(containerId, actions);
     let html = '<div class="actions-list">';
     for (let i = 0; i < actions.length; i++) {
       html += this._actionRowHTML(actions[i], i, containerId, options);
@@ -2444,27 +2551,30 @@ class CampaignEditor {
     } else if (type === 'trigger_event') {
       const evtOpts = (this.campaign.events || []).map(e => `<option value="${this._esc(e.id)}" ${(action.event_id === e.id) ? 'selected' : ''}>${this._esc(e.id)}</option>`).join('');
       paramHTML = `<select class="action-param" data-idx="${index}" data-container="${containerId}" data-field="event_id">${evtOpts}</select>`;
-    } else if (type === 'play_audio') {
-      paramHTML = `<input type="text" class="action-param" data-idx="${index}" data-container="${containerId}" data-field="src" value="${this._esc(action.src || '')}" placeholder="URL del audio">`;
     } else if (type === 'finish_campaign') {
       paramHTML = `<input type="text" class="action-param" data-idx="${index}" data-container="${containerId}" data-field="text" value="${this._esc(action.text || '')}" placeholder="Texto de despedida (opcional)">`;
     } else if (type === 'dialogue') {
+      const optsCount = (action.options || []).length;
       paramHTML = `
-        <input type="text" class="action-param" style="min-width:120px;" data-idx="${index}" data-container="${containerId}" data-field="text" value="${this._esc(action.text || '')}" placeholder="Texto del diálogo">
-        <input type="text" class="action-param" style="min-width:80px;" data-idx="${index}" data-container="${containerId}" data-field="speaker" value="${this._esc(action.speaker || '')}" placeholder="Personaje">
-        <textarea class="action-param" style="min-width:120px;min-height:2rem;" data-idx="${index}" data-container="${containerId}" data-field="options" placeholder="Opciones (una por línea)">${this._esc((action.options || []).map(o => o.text).join('\n'))}</textarea>
+        <span style="color:var(--text-muted);font-size:0.85rem;">
+          <i class="fa-solid fa-comments"></i> "${this._esc(action.text || 'Sin texto')}" 
+          (${optsCount} opción${optsCount !== 1 ? 'es' : ''})
+        </span>
+        <button type="button" class="btn btn-sm btn-secondary" onclick="editor.openDialogueModal(${index}, '${containerId}')">
+          <i class="fa-solid fa-pen-to-square"></i> Editar
+        </button>
       `;
     }
 
     const typeOpts = [
       ['text', 'Texto'], ['add_item', 'Añadir item'], ['remove_item', 'Quitar item'],
       ['set_var', 'Establecer var'], ['change_scene', 'Cambiar escena'],
-      ['exit_scene', 'Salir de escena'], ['trigger_event', 'Evento'], ['play_audio', 'Audio'],
-      ['dialogue', 'Diálogo'], ['finish_campaign', 'Terminar campaña']
+      ['exit_scene', 'Salir de escena'], ['trigger_event', 'Evento'],
+      ['dialogue', 'Diálogo'], ['finish_campaign', 'Terminar caso']
     ].map(([v, l]) => `<option value="${v}" ${type === v ? 'selected' : ''}>${l}</option>`).join('');
 
     return `
-      <div class="action-row">
+      <div class="action-row" data-action="${encodeURIComponent(JSON.stringify(action))}">
         <select class="action-type" data-idx="${index}" data-container="${containerId}" onchange="editor.onActionTypeChange('${containerId}', ${index}, this.value)">${typeOpts}</select>
         ${paramHTML}
         <button class="btn btn-sm btn-danger" onclick="editor.removeAction('${containerId}', ${index})">×</button>
@@ -2474,7 +2584,11 @@ class CampaignEditor {
 
   onActionTypeChange(containerId, index, newType) {
     const actions = this._collectActionsFromDOM(containerId);
-    actions[index] = { type: newType };
+    if (newType === 'dialogue') {
+      actions[index] = { type: 'dialogue', text: '', speaker: '', options: [] };
+    } else {
+      actions[index] = { type: newType };
+    }
     this.renderActions(containerId, actions);
     this._doAutoSave();
   }
@@ -2493,15 +2607,39 @@ class CampaignEditor {
     this._doAutoSave();
   }
 
+  // ═══════════════════════════════════════════════════════════════
+  //  DIALOGUE MODAL (using DialogueModal class)
+  // ═══════════════════════════════════════════════════════════════
+
+  openDialogueModal(actionIndex, containerId) {
+    const actions = this._actionsMap.get(containerId);
+    if (!actions || !actions[actionIndex]) return;
+    
+    const modal = new DialogueModal(null, actions, actionIndex);
+    modal.open();
+  }
+
   _collectActionsFromDOM(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return [];
     const rows = container.querySelectorAll('.action-row');
+    const savedActions = this._actionsMap.get(containerId);
     const actions = [];
-    rows.forEach(row => {
+    rows.forEach((row, index) => {
       const typeSel = row.querySelector('.action-type');
       if (!typeSel) return;
       const type = typeSel.value;
+      
+      // Para diálogos, usar la acción del array guardado (no del DOM vacío)
+      if (type === 'dialogue') {
+        if (savedActions && savedActions[index] && savedActions[index].type === 'dialogue') {
+          actions.push(savedActions[index]);
+        } else {
+          actions.push({ type: 'dialogue', text: '', speaker: '', options: [] });
+        }
+        return;
+      }
+      
       const action = { type };
       row.querySelectorAll('[data-field]').forEach(el => {
         const field = el.dataset.field;
@@ -2511,13 +2649,18 @@ class CampaignEditor {
           else if (val === 'false') val = false;
           else if (!isNaN(val) && val.trim() !== '') val = Number(val);
         }
-        if (field === 'options' && type === 'dialogue') {
-          val = val.split('\n').map(line => line.trim()).filter(line => line.length > 0).map(line => ({ text: line }));
-        }
         action[field] = val;
       });
       actions.push(action);
     });
+    
+    // Update the saved array in place to maintain the reference
+    if (savedActions && Array.isArray(savedActions)) {
+      savedActions.length = 0;
+      actions.forEach(a => savedActions.push(a));
+      return savedActions;
+    }
+    
     return actions;
   }
 
@@ -2601,6 +2744,7 @@ class CampaignEditor {
       const el = this._selectedSceneElement;
       if (el.type === 'area') {
         const area = loc.clickable_areas[el.index];
+        if (!area) { this._selectedSceneElement = null; return; } // Guard against stale selection
         const aid = document.getElementById('prop_aid');
         const px = document.getElementById('prop_x');
         const py = document.getElementById('prop_y');
@@ -2621,6 +2765,7 @@ class CampaignEditor {
         area.on_click = this._collectActionBlockFromDOM('area-actions-block');
       } else if (el.type === 'npc') {
         const inst = loc.npc_instances[el.index];
+        if (!inst) { this._selectedSceneElement = null; return; } // Guard against stale selection
         const npref = document.getElementById('prop_npref');
         const npx = document.getElementById('prop_npx');
         const npy = document.getElementById('prop_npy');

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es>
+
 class GpsBlockMap {
   constructor(geoManager, isTestMode, itemManager, npcManager) {
     this.geo = geoManager;
@@ -480,12 +483,12 @@ class GpsBlockMap {
     if (nearest) {
       const inRange = nearestDist <= (nearest.gps.radius_meters || 30);
       if (inRange) {
-        el.innerHTML = `<span style="color:#2ecc71;font-weight:bold;">✅ Dentro de ${nearest.name}</span>`;
+        el.innerHTML = `<span style="color:#2ecc71;font-weight:bold;">Dentro de ${nearest.name}</span>`;
       } else {
-        el.textContent = `📍 ${nearest.name}: ${Math.round(nearestDist)}m`;
+        el.textContent = `${nearest.name}: ${Math.round(nearestDist)}m`;
       }
     } else {
-      el.textContent = '🗺️ Modo exploración';
+      el.textContent = 'Modo exploración';
     }
   }
 

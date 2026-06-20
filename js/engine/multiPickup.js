@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es>
+
 const MultiPickup = {
   show(items, npcs, lat, lng, onPickItem, onInteractNpc) {
     const overlay = document.createElement('div');
@@ -27,7 +30,7 @@ const MultiPickup = {
     for (const npc of npcs) {
       const div = document.createElement('div');
       div.style.cssText = 'padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;';
-      div.innerHTML = `<span>🧑 ${npc.name}</span>`;
+      div.innerHTML = `<span>${npc.name}</span>`;
       const btn = document.createElement('button');
       btn.className = 'ui-btn';
       btn.textContent = 'Interactuar';

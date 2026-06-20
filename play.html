@@ -1,9 +1,14 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es> -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>GeoEscape - Cargando campaña...</title>
+  <meta name="robots" content="noindex, nofollow">
+  <title>GeoEscape - Cargando caso...</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <style>
     body {
@@ -72,14 +77,14 @@
 <body>
   <div id="loading-box" class="loading-box">
     <div class="spinner"></div>
-    <h2>🎮 Cargando campaña...</h2>
+    <h2><i class="fa-solid fa-gamepad"></i> Cargando caso...</h2>
     <p>Descargando datos de la nube y preparando la experiencia.</p>
   </div>
 
   <div id="error-box" class="error-box">
-    <h2>❌ Error</h2>
-    <p id="error-msg">No se pudo cargar la campaña.</p>
-    <a href="index.html">🏠 Volver al inicio</a>
+    <h2><i class="fa-solid fa-xmark"></i> Error</h2>
+    <p id="error-msg">No se pudo cargar el caso.</p>
+    <a href="index.html"><i class="fa-solid fa-house"></i> Volver al inicio</a>
   </div>
 
   <script>
@@ -88,7 +93,7 @@
       const uuid = urlParams.get('uuid');
 
       if (!uuid) {
-        showError('No se proporcionó un UUID de campaña.');
+        showError('No se proporcionó un UUID de caso.');
         return;
       }
 
@@ -97,7 +102,7 @@
         const data = await res.json();
 
         if (!data.success || !data.campaign) {
-          showError(data.error || 'Campaña no encontrada.');
+          showError(data.error || 'Caso no encontrado.');
           return;
         }
 
@@ -123,5 +128,6 @@
       document.getElementById('error-msg').textContent = msg;
     }
   </script>
+  <script src="js/cookie-banner.js"></script>
 </body>
 </html>

@@ -1,36 +1,70 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es> -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>GeoEscape</title>
+  <title>GeoEscape - Descifra la realidad</title>
+  <meta name="description" content="GeoEscape es un juego de escape room basado en GPS. Crea, comparte y juega casos interactivos con amigos. ¡Descifra la realidad!">
+  <meta name="author" content="Manu Montaraz">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://escape.manumontaraz.es/">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="GeoEscape - Descifra la realidad">
+  <meta property="og:description" content="Juego de escape room basado en GPS. Crea, comparte y juega casos interactivos.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://escape.manumontaraz.es/">
+  <meta property="og:image" content="https://escape.manumontaraz.es/assets/seo/og-image.png">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="GeoEscape">
+  
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="GeoEscape - Descifra la realidad">
+  <meta name="twitter:description" content="Juego de escape room basado en GPS. Crea, comparte y juega casos interactivos.">
+  <meta name="twitter:image" content="https://escape.manumontaraz.es/assets/seo/og-image.png">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/shared/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/shared/icon-192.png">
+  
   <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
   <div id="app">
     <header class="main-header">
       <h1>GeoEscape</h1>
-      <p>Escapa de la realidad</p>
+      <p>Descifra la realidad</p>
       <div id="user-area" style="position:absolute;top:1rem;right:1rem;">
-        <button id="btn-login" class="btn btn-sm" onclick="showAuthModal()" style="display:none">👤 Iniciar Sesión</button>
+        <button id="btn-login" class="btn btn-sm" onclick="showAuthModal()" style="display:none"><i class="fa-solid fa-user"></i> Iniciar Sesión</button>
         <div id="user-info" style="display:none;align-items:center;gap:0.5rem;">
           <span id="user-name" style="color:var(--accent);font-weight:bold;"></span>
-          <button class="btn btn-sm" onclick="logout()">🚪 Salir</button>
+          <button class="btn btn-sm" onclick="logout()"><i class="fa-solid fa-door-open"></i> Salir</button>
         </div>
       </div>
     </header>
     <main class="menu-container">
-      <button class="btn btn-primary" onclick="startDemo()">🎮 Jugar Campaña Demo</button>
-      <button class="btn btn-secondary" onclick="loadCampaign()">📂 Cargar JSON Manual</button>
-      <button class="btn btn-secondary" onclick="showNearbyCampaigns()">📍 Buscar Campañas Cercanas</button>
-      <button class="btn btn-secondary" onclick="showRelativeCampaigns()">📂 Descargar Campaña Relativa</button>
-      <button class="btn btn-secondary" id="btn-editor" style="display:none" onclick="window.location.href='editor.html'">🛠️ Editor de Campañas</button>
-      <button class="btn btn-secondary" onclick="showCreditsModal()">❤️ Créditos</button>
+      <button class="btn btn-primary" onclick="startDemo()"><i class="fa-solid fa-gamepad"></i> Jugar Caso Demo</button>
+      <button class="btn btn-secondary" onclick="showDownloadedCampaigns()"><i class="fa-solid fa-download"></i> Casos Descargados</button>
+      <button class="btn btn-secondary" onclick="showNearbyCampaigns()"><i class="fa-solid fa-map-pin"></i> Descargar Casos Cercanos</button>
+      <button class="btn btn-secondary" onclick="showRelativeCampaigns()"><i class="fa-solid fa-folder"></i> Descargar Casos Relativos</button>
+      <button class="btn btn-secondary" id="btn-editor" style="display:none" onclick="window.location.href='editor.html'"><i class="fa-solid fa-pen-ruler"></i> Editor de Casos</button>
+      <button class="btn btn-secondary" onclick="showCreditsModal()"><i class="fa-solid fa-heart"></i> Créditos</button>
       <input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleFile(event)">
     </main>
     <footer class="main-footer">
       <p>Offline First • Sin anuncios • Open Source</p>
+      <div style="margin-top:0.5rem;font-size:0.75rem;">
+        <a href="aviso-legal.php" style="color:var(--text-muted);text-decoration:none;">Aviso Legal</a> • 
+        <a href="privacidad.php" style="color:var(--text-muted);text-decoration:none;">Privacidad</a> • 
+        <a href="cookies.php" style="color:var(--text-muted);text-decoration:none;">Cookies</a> • 
+        <a href="terminos.php" style="color:var(--text-muted);text-decoration:none;">Términos</a>
+      </div>
     </footer>
   </div>
 
@@ -69,7 +103,7 @@
         <p style="text-align:center;margin-top:1rem;"><a href="#" onclick="switchAuthTab('login')" style="color:var(--accent);">Volver al login</a></p>
       </div>
       
-      <button class="btn btn-sm" style="margin-top:1rem;width:100%;" onclick="hideAuthModal()">❌ Cerrar</button>
+      <button class="btn btn-sm" style="margin-top:1rem;width:100%;" onclick="hideAuthModal()"><i class="fa-solid fa-xmark"></i> Cerrar</button>
     </div>
   </div>
 
@@ -77,34 +111,36 @@
   <div id="cloud-menu-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;align-items:center;justify-content:center;">
     <div id="cloud-menu-inner" style="background:var(--bg-panel);border:2px solid var(--accent);border-radius:8px;max-width:900px;width:95%;height:90dvh;display:flex;flex-direction:column;overflow:hidden;position:relative;">
       <button onclick="document.getElementById('cloud-menu-modal').style.display='none'" style="position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;z-index:10;">×</button>
-      <h3 id="cloud-menu-title" style="color:var(--accent);margin:0;padding:0.8rem 1rem;border-bottom:1px solid var(--accent);flex-shrink:0;">Campañas</h3>
+      <h3 id="cloud-menu-title" style="color:var(--accent);margin:0;padding:0.8rem 1rem;border-bottom:1px solid var(--accent);flex-shrink:0;">Casos</h3>
       <div id="cloud-menu-content" style="flex:1;overflow-y:auto;padding:1rem;"></div>
     </div>
   </div>
 
   <!-- Credits Modal -->
   <div id="credits-modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;">
-    <div style="background:var(--bg-panel);border:2px solid var(--accent);border-radius:8px;max-width:400px;width:90%;max-height:90vh;overflow-y:auto;padding:2rem;text-align:center;">
+    <div style="position:relative;background:var(--bg-panel);border:2px solid var(--accent);border-radius:8px;max-width:400px;width:90%;max-height:90vh;overflow-y:auto;padding:2rem;text-align:center;">
       <button onclick="hideCreditsModal()" style="position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;">×</button>
-      <h2 style="color:var(--accent);margin-bottom:1rem;">❤️ Créditos</h2>
+      <h2 style="color:var(--accent);margin-bottom:1rem;"><i class="fa-solid fa-heart"></i> Créditos</h2>
       <p style="color:var(--text-muted);margin-bottom:1rem;">GeoEscape es un proyecto indie</p>
-      <p style="color:var(--text);margin-bottom:1.5rem;font-size:1.1rem;">Hecho con ❤️ por <strong>Manu Montaraz</strong></p>
+      <p style="color:var(--text);margin-bottom:1.5rem;font-size:1.1rem;">Hecho con <i class="fa-solid fa-heart"></i> por <strong>Manu Montaraz</strong> y mi amiga <strong>Kimi K2.6</strong></p>
       <p style="color:var(--text-muted);margin-bottom:1.5rem;">Gracias por tu apoyo</p>
       <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;">
-        <a href="https://manumontaraz.es" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;">🌐 Visitar mi web</a>
+        <a href="https://manumontaraz.es" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;"><i class="fa-solid fa-globe"></i> Visitar mi web</a>
       </div>
-      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;">
-        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.5rem;">Redes sociales</p>
-        <a href="https://www.youtube.com/@manumontaraz" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:0.9rem;">📺 YouTube</a>
-        <a href="https://www.instagram.com/manumontaraz/" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:0.9rem;">📸 Instagram</a>
-        <a href="https://bsky.app/profile/manumontaraz.es" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:0.9rem;">🦋 Bluesky</a>
-        <a href="https://www.twitch.tv/manumontaraz" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:0.9rem;">🎮 Twitch</a>
-        <a href="https://www.tiktok.com/@manumontaraz" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:0.9rem;">🎵 TikTok</a>
+      <div style="display:flex;flex-direction:row;justify-content:center;gap:0.5rem;margin-bottom:1.5rem;">
+        <a href="https://www.youtube.com/@manumontaraz" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:1.2rem;padding:0.4rem 0.6rem;"><i class="fa-brands fa-youtube"></i></a>
+        <a href="https://www.instagram.com/manumontaraz/" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:1.2rem;padding:0.4rem 0.6rem;"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://bsky.app/profile/manumontaraz.es" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:1.2rem;padding:0.4rem 0.6rem;"><i class="fa-brands fa-bluesky"></i></a>
+        <a href="https://www.twitch.tv/manumontaraz" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:1.2rem;padding:0.4rem 0.6rem;"><i class="fa-brands fa-twitch"></i></a>
+        <a href="https://www.tiktok.com/@manumontaraz" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;font-size:1.2rem;padding:0.4rem 0.6rem;"><i class="fa-brands fa-tiktok"></i></a>
+      </div>
+      <div style="margin-bottom:1rem;">
+        <a href="https://github.com/ManuMontaraz/geoescape" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;"><i class="fa-brands fa-github"></i> Ver código fuente</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:0.5rem;">
         <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.5rem;">Apoya el proyecto</p>
-        <a href="https://donate.stripe.com/cNi00j5uteU5fYncMj7bW02" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;background:#27ae60;">💝 Donación única</a>
-        <a href="https://donate.stripe.com/8x25kD5ut8vHeUj6nV7bW01" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;background:#3498db;">🤝 Apadrinar</a>
+        <a href="https://donate.stripe.com/cNi00j5uteU5fYncMj7bW02" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;background:#27ae60;"><i class="fa-solid fa-heart"></i> Donación única</a>
+        <a href="https://donate.stripe.com/8x25kD5ut8vHeUj6nV7bW01" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;background:#3498db;"><i class="fa-solid fa-hand-holding-heart"></i> Apadrinar</a>
       </div>
     </div>
   </div>
@@ -113,11 +149,11 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="js/core/db.js"></script>
   <script>
-    // Service worker disabled for development
+    // Register service worker for offline support
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(regs => {
-        for (const reg of regs) reg.unregister();
-      });
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('SW registered:', reg.scope))
+        .catch(err => console.log('SW registration failed:', err));
     }
 
     const SAVED_KEY = 'ge_saved_campaign';
@@ -152,19 +188,101 @@
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = (ev) => {
+      reader.onload = async (ev) => {
         try {
           const data = JSON.parse(ev.target.result);
           clearCampaignStorage();
           localStorage.setItem('ge_campaign_json', ev.target.result);
           localStorage.setItem('ge_current_campaign', 'custom');
           localStorage.setItem(SAVED_KEY, data.campaign_id || 'custom');
+          // Save to IndexedDB
+          await DB.saveCampaign(data.campaign_id || 'custom', ev.target.result);
           window.location.href = 'game.html';
         } catch (err) {
           alert('JSON inválido');
         }
       };
       reader.readAsText(file);
+    }
+
+    async function showDownloadedCampaigns() {
+      const modal = document.getElementById('cloud-menu-modal');
+      const content = document.getElementById('cloud-menu-content');
+      const title = document.getElementById('cloud-menu-title');
+      title.innerHTML = '<i class="fa-solid fa-download"></i> Casos Descargados';
+      content.innerHTML = '<p style="color:var(--text-muted);">Cargando...</p>';
+      modal.style.display = 'flex';
+
+      try {
+        const campaigns = await DB.getAllCampaigns();
+        if (campaigns.length === 0) {
+          content.innerHTML = '<p style="color:var(--text-muted);">No tienes casos descargados. Busca casos cercanos o descarga uno.</p>';
+        } else {
+          let html = '<div style="display:flex;flex-direction:column;gap:0.8rem;">';
+          for (const c of campaigns) {
+            try {
+              const data = JSON.parse(c.json);
+              const meta = data.metadata || {};
+              html += `
+                <div style="border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:0.8rem;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <strong>${esc(meta.title || c.id)}</strong>
+                  </div>
+                  <div style="font-size:0.8rem;color:var(--text-muted);margin:0.3rem 0;">
+                    ${esc(meta.description || 'Sin descripción')}
+                  </div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.3rem;">
+                    Autor: ${esc(meta.author || 'Anónimo')}
+                  </div>
+                  <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+                    <button class="btn btn-sm btn-primary" onclick="playDownloadedCampaign('${esc(c.id)}')"><i class="fa-solid fa-play"></i> Jugar</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteDownloadedCampaign('${esc(c.id)}')"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                  </div>
+                </div>
+              `;
+            } catch (e) {
+              console.error('Error parsing campaign:', c.id, e);
+            }
+          }
+          html += '</div>';
+          content.innerHTML = html;
+        }
+        // Add import button at the bottom
+        const importBtn = document.createElement('div');
+        importBtn.style.marginTop = '1rem';
+        importBtn.innerHTML = '<button class="btn btn-secondary" style="width:100%;" onclick="document.getElementById(\'fileInput\').click()">\u200B<i class="fa-solid fa-folder"></i> Importar JSON manualmente</button>';
+        content.appendChild(importBtn);
+      } catch (e) {
+        content.innerHTML = `<p style="color:#e74c3c;">Error: ${e.message}</p>`;
+      }
+    }
+
+    async function playDownloadedCampaign(id) {
+      try {
+        const json = await DB.getCampaign(id);
+        if (!json) {
+          alert('Caso no encontrado');
+          return;
+        }
+        const data = JSON.parse(json);
+        clearCampaignStorage();
+        localStorage.setItem('ge_campaign_json', json);
+        localStorage.setItem('ge_current_campaign', 'downloaded_' + id);
+        localStorage.setItem('ge_saved_campaign', data.campaign_id || id);
+        window.location.href = 'game.html';
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    async function deleteDownloadedCampaign(id) {
+      if (!confirm('¿Eliminar este caso descargado?')) return;
+      try {
+        await DB.deleteCampaign(id);
+        showDownloadedCampaigns();
+      } catch (e) {
+        alert('Error al eliminar: ' + e.message);
+      }
     }
 
     // Always clear campaign data on landing page
@@ -320,7 +438,7 @@
       const modal = document.getElementById('cloud-menu-modal');
       const content = document.getElementById('cloud-menu-content');
       const title = document.getElementById('cloud-menu-title');
-      title.textContent = '📍 Campañas Cercanas (30km)';
+      title.innerHTML = '<i class="fa-solid fa-map-pin"></i> Casos Cercanos (30km)';
       content.innerHTML = '<p style="color:var(--text-muted);">Solicitando ubicación GPS...</p>';
       modal.style.display = 'flex';
 
@@ -332,13 +450,13 @@
       navigator.geolocation.getCurrentPosition(async (pos) => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
-        content.innerHTML = `<p style="color:var(--text-muted);">Buscando campañas cerca de ${lat.toFixed(4)}, ${lng.toFixed(4)}...</p>`;
+        content.innerHTML = `<p style="color:var(--text-muted);">Buscando casos cerca de ${lat.toFixed(4)}, ${lng.toFixed(4)}...</p>`;
 
         try {
           const res = await fetch(`api/campaigns/nearby.php?lat=${lat}&lng=${lng}&radius=30`);
           const data = await res.json();
           if (!data.success || data.campaigns.length === 0) {
-            content.innerHTML = '<p style="color:var(--text-muted);">No hay campañas públicas en un radio de 30km.</p>';
+            content.innerHTML = '<p style="color:var(--text-muted);">No hay casos públicos en un radio de 30km.</p>';
             return;
           }
 
@@ -350,11 +468,11 @@
               <div style="border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:0.8rem;">
                 <strong>${esc(c.title || c.campaign_id)}</strong>
                 <div style="font-size:0.8rem;color:var(--text-muted);">
-                  ${c.distance.toFixed(1)}km de distancia | 👍 ${c.vote_count || 0} | Autor: ${esc(c.author || 'Anónimo')}
+                  ${c.distance.toFixed(1)}km de distancia | <i class="fa-solid fa-thumbs-up"></i> ${c.vote_count || 0} | Autor: ${esc(c.author || 'Anónimo')}
                 </div>
                 <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
-                  <button class="btn btn-sm btn-primary" onclick="downloadAndPlay('${esc(c.uuid)}')">📥 Jugar</button>
-                  <button class="btn btn-sm btn-secondary" onclick="downloadCampaign('${esc(c.uuid)}')">⬇️ Descargar</button>
+                  <button class="btn btn-sm btn-primary" onclick="downloadAndPlay('${esc(c.uuid)}')"><i class="fa-solid fa-download"></i> Jugar</button>
+                  <button class="btn btn-sm btn-secondary" onclick="downloadCampaign('${esc(c.uuid)}')"><i class="fa-solid fa-download"></i> Descargar</button>
                 </div>
               </div>
             `;
@@ -376,7 +494,7 @@
               iconSize: [28, 28],
               iconAnchor: [14, 14]
             });
-            L.marker([lat, lng], { icon: userIcon }).addTo(map).bindPopup('<b>📍 Tú estás aquí</b>').openPopup();
+            L.marker([lat, lng], { icon: userIcon }).addTo(map).bindPopup('<b>\u200B<i class="fa-solid fa-map-pin"></i> Tú estás aquí</b>').openPopup();
 
             // Campaign markers with interactive popup
             for (const c of data.campaigns) {
@@ -386,11 +504,11 @@
                     <strong style="color:var(--accent);font-size:1.1rem;display:block;margin-bottom:0.4rem;">${esc(c.title || c.campaign_id)}</strong>
                     <p style="color:var(--text-muted);margin:0.3rem 0;font-size:0.85rem;line-height:1.4;">${esc(c.description || 'Sin descripción')}</p>
                     <div style="font-size:0.8rem;color:var(--text-muted);margin:0.4rem 0;">
-                      👍 ${c.vote_count || 0} votos | Autor: ${esc(c.author || 'Anónimo')}
+                      <i class="fa-solid fa-thumbs-up"></i> ${c.vote_count || 0} votos | Autor: ${esc(c.author || 'Anónimo')}
                     </div>
                     <div style="display:flex;gap:0.5rem;">
-                      <button class="btn btn-sm btn-primary" onclick="downloadAndPlay('${esc(c.uuid)}')" style="flex:1;">📥 Jugar</button>
-                      <button class="btn btn-sm btn-secondary" onclick="downloadCampaign('${esc(c.uuid)}')" style="flex:1;">⬇️ Descargar</button>
+                      <button class="btn btn-sm btn-primary" onclick="downloadAndPlay('${esc(c.uuid)}')" style="flex:1;"><i class="fa-solid fa-download"></i> Jugar</button>
+                      <button class="btn btn-sm btn-secondary" onclick="downloadCampaign('${esc(c.uuid)}')" style="flex:1;"><i class="fa-solid fa-download"></i> Descargar</button>
                     </div>
                   </div>
                 `;
@@ -412,7 +530,7 @@
       const modal = document.getElementById('cloud-menu-modal');
       const content = document.getElementById('cloud-menu-content');
       const title = document.getElementById('cloud-menu-title');
-      title.textContent = '📂 Campañas Relativas (Descargar)';
+      title.innerHTML = '<i class="fa-solid fa-folder"></i> Casos Relativos (Descargar)';
       content.innerHTML = '<p style="color:var(--text-muted);">Cargando...</p>';
       modal.style.display = 'flex';
 
@@ -420,7 +538,7 @@
         const res = await fetch('api/campaigns/list.php?gps_type=relative&sort=votes');
         const data = await res.json();
         if (!data.success || data.campaigns.length === 0) {
-          content.innerHTML = '<p style="color:var(--text-muted);">No hay campañas relativas públicas disponibles.</p>';
+          content.innerHTML = '<p style="color:var(--text-muted);">No hay casos relativos públicos disponibles.</p>';
           return;
         }
         let html = '<div style="display:flex;flex-direction:column;gap:0.8rem;">';
@@ -429,7 +547,7 @@
             <div style="border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:0.8rem;">
               <div style="display:flex;justify-content:space-between;align-items:center;">
                 <strong>${esc(c.title || c.campaign_id)}</strong>
-                <span style="font-size:0.8rem;color:var(--text-muted);">👍 ${c.vote_count || 0}</span>
+                <span style="font-size:0.8rem;color:var(--text-muted);"><i class="fa-solid fa-thumbs-up"></i> ${c.vote_count || 0}</span>
               </div>
               <div style="font-size:0.8rem;color:var(--text-muted);margin:0.3rem 0;">
                 ${esc(c.description || 'Sin descripción')}
@@ -438,8 +556,8 @@
                 Autor: ${esc(c.author || 'Anónimo')}
               </div>
               <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
-                <button class="btn btn-sm btn-primary" onclick="downloadAndPlay('${esc(c.uuid)}')">📥 Jugar</button>
-                <button class="btn btn-sm btn-secondary" onclick="downloadCampaign('${esc(c.uuid)}')">⬇️ Descargar JSON</button>
+                <button class="btn btn-sm btn-primary" onclick="downloadAndPlay('${esc(c.uuid)}')"><i class="fa-solid fa-download"></i> Jugar</button>
+                <button class="btn btn-sm btn-secondary" onclick="downloadCampaign('${esc(c.uuid)}')"><i class="fa-solid fa-download"></i> Descargar JSON</button>
               </div>
             </div>
           `;
@@ -456,11 +574,13 @@
         const res = await fetch(`api/campaigns/load.php?uuid=${encodeURIComponent(uuid)}`, { credentials: 'same-origin' });
         const data = await res.json();
         if (!data.success) {
-          alert('❌ ' + (data.error || 'Error al descargar'));
+          alert('Error: ' + (data.error || 'Error al descargar'));
           return;
         }
         const campaign = JSON.parse(data.campaign.campaign_json);
         clearCampaignStorage();
+        // Save to IndexedDB
+        await DB.saveCampaign(campaign.campaign_id, data.campaign.campaign_json);
         localStorage.setItem('ge_campaign_json', data.campaign.campaign_json);
         localStorage.setItem('ge_current_campaign', 'cloud_' + uuid);
         localStorage.setItem('ge_saved_campaign', campaign.campaign_id);
@@ -468,7 +588,7 @@
         localStorage.setItem('ge_campaign_is_public', data.campaign.is_public ? '1' : '0');
         window.location.href = 'game.html';
       } catch (e) {
-        alert('❌ Error: ' + e.message);
+        alert('Error: ' + e.message);
       }
     }
 
@@ -477,7 +597,7 @@
         const res = await fetch(`api/campaigns/load.php?uuid=${encodeURIComponent(uuid)}`, { credentials: 'same-origin' });
         const data = await res.json();
         if (!data.success) {
-          alert('❌ ' + (data.error || 'Error al descargar'));
+          alert('Error: ' + (data.error || 'Error al descargar'));
           return;
         }
         const campaign = JSON.parse(data.campaign.campaign_json);
@@ -489,7 +609,7 @@
         a.click();
         URL.revokeObjectURL(url);
       } catch (e) {
-        alert('❌ Error: ' + e.message);
+        alert('Error: ' + e.message);
       }
     }
 
@@ -509,5 +629,6 @@
     // Check auth on page load
     checkAuth();
   </script>
+  <script src="js/cookie-banner.js"></script>
 </body>
 </html>

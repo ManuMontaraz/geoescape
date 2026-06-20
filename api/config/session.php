@@ -1,4 +1,7 @@
 <?php
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es>
+
 // GeoEscape - Session Configuration with MariaDB Storage
 require_once __DIR__ . '/../config/database.php';
 

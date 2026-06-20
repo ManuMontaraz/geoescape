@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es>
+
 class LocationSimulator {
   constructor(geoManager, campaign, itemManager, npcManager) {
     this.geo = geoManager;
@@ -212,7 +215,7 @@ class LocationSimulator {
     this.teleportMode = true;
     const container = document.getElementById('simulator-map');
     if (container) container.style.cursor = 'crosshair';
-    UIComponents.toast('🎯 Click en el mapa para teletransportarte');
+    UIComponents.toast('Click en el mapa para teletransportarte');
   }
 
   disableTeleport() {
@@ -239,7 +242,7 @@ class LocationSimulator {
     this._updateDistanceText();
     this._refreshEntityMarkers();
     this._refreshLocationVisibility();
-    UIComponents.toast(`🎯 Teletransportado a ${lat.toFixed(5)}, ${lng.toFixed(5)}`);
+    UIComponents.toast(`Teletransportado a ${lat.toFixed(5)}, ${lng.toFixed(5)}`);
   }
 
   _drawLocation(loc) {
@@ -460,13 +463,13 @@ class LocationSimulator {
     if (nearest) {
       const inRange = nearestDist <= (nearest.gps.radius_meters || 30);
       if (inRange) {
-        el.innerHTML = `<span style="color:#2ecc71;font-weight:bold;">✅ Dentro de ${nearest.name}</span>`;
+        el.innerHTML = `<span style="color:#2ecc71;font-weight:bold;">Dentro de ${nearest.name}</span>`;
       } else {
-        el.textContent = `📍 ${nearest.name}: ${Math.round(nearestDist)}m`;
+        el.textContent = `${nearest.name}: ${Math.round(nearestDist)}m`;
       }
       if (enterBtn) enterBtn.style.display = inRange ? '' : 'none';
     } else {
-      el.textContent = '🗺️ Modo libre';
+      el.textContent = 'Modo libre';
       if (enterBtn) enterBtn.style.display = 'none';
     }
   }
@@ -489,7 +492,7 @@ class LocationSimulator {
       if (window.game) window.game._autoSave();
       this.close();
     } else {
-      UIComponents.toast('❌ No estás dentro del rango de ninguna ubicación');
+      UIComponents.toast('No estás dentro del rango de ninguna ubicación');
     }
   }
 }

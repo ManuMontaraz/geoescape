@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es> */
+
 :root {
   --bg-dark: #1a1a2e;
   --bg-panel: #16213e;
@@ -61,6 +64,7 @@ html, body {
 
 .btn-primary { background: var(--btn-primary); }
 .btn-secondary { background: var(--btn-secondary); }
+.btn-danger { background: #c0392b; }
 
 .main-footer { font-size: 0.85rem; color: var(--text-muted); }
 
@@ -68,9 +72,31 @@ html, body {
 .game-body { background: #000; }
 
 #game-container {
-  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "topbar"
+    "main";
   width: 100dvw;
   height: 100dvh;
+  overflow: hidden;
+}
+
+#game-top-bar {
+  grid-area: topbar;
+  position: relative;
+  z-index: 70;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--accent);
+  pointer-events: auto;
+}
+
+#game-main-area {
+  grid-area: main;
+  position: relative;
   overflow: hidden;
 }
 
@@ -90,15 +116,6 @@ html, body {
 
 #ui-layer > * { pointer-events: auto; }
 
-#top-bar {
-  position: relative;
-  z-index: 70;
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
-  background: rgba(0,0,0,0.5);
-}
-
 .ui-btn {
   background: var(--bg-panel);
   border: 1px solid var(--accent);
@@ -110,6 +127,23 @@ html, body {
 }
 
 .ui-btn:active { background: var(--accent); }
+
+/* Block UI during dialogue or text overlay */
+body.dialogue-active #game-top-bar button,
+body.text-overlay-active #game-top-bar button,
+body.dialogue-active #gps-top-bar button,
+body.text-overlay-active #gps-top-bar button,
+body.dialogue-active .gps-bar-actions button,
+body.text-overlay-active .gps-bar-actions button {
+  opacity: 0.3;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+body.dialogue-active #dialogue-box,
+body.text-overlay-active #text-overlay {
+  pointer-events: auto;
+}
 
 /* Text Overlay */
 #text-overlay {
@@ -937,5 +971,87 @@ html, body {
   .cryptex-strip { min-width: 48px; padding: 0.3rem; }
   .cryptex-btn-up, .cryptex-btn-down { width: 40px; height: 32px; }
   .cryptex-try-btn { padding: 0.6rem 1.8rem; font-size: 1rem; }
+}
+
+/* Dialogue Options */
+.dialogue-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dialogue-options.nested {
+  border-left: 3px solid var(--accent);
+  margin-left: 1rem;
+}
+
+.dialogue-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dialogue-option-header {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dialogue-option-text {
+  flex: 1;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: var(--bg-panel);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.dialogue-option-actions {
+  padding: 0.3rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent);
+  margin-left: 0.5rem;
+}
+
+.dialogue-option-actions.hidden {
+  display: none;
+}
+
+.option-action-row {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.3rem;
+  padding: 0.2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.option-action-row .action-type {
+  min-width: 100px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.8rem;
+}
+
+.option-action-row .action-param {
+  padding: 0.2rem 0.4rem;
+  font-size: 0.8rem;
+}
+
+.option-action-row .btn-danger {
+  padding: 0.2rem 0.4rem;
+  font-size: 0.75rem;
 }
 

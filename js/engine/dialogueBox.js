@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es>
+
 class DialogueBox {
   constructor() {
     this.el = document.getElementById('dialogue-box');
@@ -9,6 +12,12 @@ class DialogueBox {
   }
 
   show(text, speaker, options) {
+    // Close any open panels
+    const invPanel = document.getElementById('inventory-panel');
+    const menuPanel = document.getElementById('menu-panel');
+    if (invPanel) invPanel.classList.add('hidden');
+    if (menuPanel) menuPanel.classList.add('hidden');
+    
     this.textEl.textContent = text;
     this.speakerEl.textContent = speaker || '';
     this.optionsEl.innerHTML = '';
@@ -29,6 +38,7 @@ class DialogueBox {
     }
     this.el.classList.remove('hidden');
     this.isOpen = true;
+    document.body.classList.add('dialogue-active');
   }
 
   _choose(opt) {
@@ -51,5 +61,6 @@ class DialogueBox {
   hide() {
     this.el.classList.add('hidden');
     this.isOpen = false;
+    document.body.classList.remove('dialogue-active');
   }
 }

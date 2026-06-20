@@ -1,4 +1,7 @@
 <?php
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Manuel Arjona Blanco <manuel@manumontaraz.es>
+
 require_once __DIR__ . '/../config/database.php';
 
 $token = $_GET['token'] ?? '';
@@ -8,6 +11,7 @@ $subMessage = '';
 
 // Override JSON header from database.php
 header("Content-Type: text/html; charset=utf-8");
+header("X-Robots-Tag: noindex, nofollow");
 
 if (empty($token)) {
     $success = false;
@@ -42,7 +46,7 @@ $baseUrl = "https://{$domain}";
 // Set colors based on state
 $bgColor = $success ? '#27ae60' : '#e74c3c';
 $bgDark = $success ? '#1e8449' : '#c0392b';
-$icon = $success ? '✅' : '❌';
+$icon = $success ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>';
 $buttonText = $success ? 'Ir al inicio' : 'Volver al inicio';
 ?>
 <!DOCTYPE html>
@@ -51,6 +55,7 @@ $buttonText = $success ? 'Ir al inicio' : 'Volver al inicio';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $success ? 'Verificación Exitosa' : 'Verificación Fallida'; ?> - GeoEscape</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/styles.css">
     <style>
         * {
