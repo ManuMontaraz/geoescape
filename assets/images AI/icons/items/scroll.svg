@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Sombra -->
+  <ellipse cx="34" cy="58" rx="14" ry="3" fill="#000" opacity="0.15"/>
+  <!-- Cilindro inferior (rollo) -->
+  <rect x="16" y="46" width="32" height="8" rx="3" fill="#8d6e63" stroke="#333" stroke-width="1.5"/>
+  <!-- Detalle madera rollo inferior -->
+  <line x1="20" y1="50" x2="44" y2="50" stroke="#5d4037" stroke-width="1"/>
+  <!-- Pergamino principal -->
+  <rect x="14" y="12" width="36" height="38" rx="2" fill="#f5deb3" stroke="#d4a373" stroke-width="1.5"/>
+  <!-- Borde ondulado superior -->
+  <path d="M 14 12 Q 18 10 22 12 Q 26 14 30 12 Q 34 10 38 12 Q 42 14 46 12 Q 50 10 50 12" stroke="#d4a373" stroke-width="1" fill="none"/>
+  <!-- Líneas de texto -->
+  <line x1="20" y1="22" x2="44" y2="22" stroke="#8d6e63" stroke-width="1"/>
+  <line x1="20" y1="28" x2="40" y2="28" stroke="#8d6e63" stroke-width="1"/>
+  <line x1="20" y1="34" x2="42" y2="34" stroke="#8d6e63" stroke-width="1"/>
+  <line x1="20" y1="40" x2="38" y2="40" stroke="#8d6e63" stroke-width="1"/>
+  <!-- Cilindro superior (rollo) -->
+  <rect x="16" y="6" width="32" height="8" rx="3" fill="#8d6e63" stroke="#333" stroke-width="1.5"/>
+  <!-- Detalle madera rollo superior -->
+  <line x1="20" y1="10" x2="44" y2="10" stroke="#5d4037" stroke-width="1"/>
+  <!-- Cordón colgante -->
+  <path d="M 46 46 Q 50 52 52 58" stroke="#c0392b" stroke-width="2" fill="none"/>
+  <circle cx="52" cy="60" r="3" fill="#c0392b" stroke="#333" stroke-width="1"/>
+</svg>

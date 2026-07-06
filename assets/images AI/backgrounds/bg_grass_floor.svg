@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <!-- Fondo base tierra -->
+  <rect x="0" y="0" width="400" height="300" fill="#5d4037"/>
+  <!-- Césped base -->
+  <rect x="0" y="0" width="400" height="300" fill="#27ae60"/>
+  <!-- Mechones de hierba (líneas verticales irregulares) -->
+  <g stroke="#1e8449" stroke-width="2" fill="none">
+    <line x1="20" y1="280" x2="22" y2="260"/>
+    <line x1="25" y1="285" x2="28" y2="265"/>
+    <line x1="40" y1="275" x2="42" y2="255"/>
+    <line x1="60" y1="280" x2="62" y2="260"/>
+    <line x1="80" y1="285" x2="83" y2="265"/>
+    <line x1="100" y1="278" x2="102" y2="258"/>
+    <line x1="120" y1="282" x2="123" y2="262"/>
+    <line x1="140" y1="276" x2="142" y2="256"/>
+    <line x1="160" y1="280" x2="163" y2="260"/>
+    <line x1="180" y1="285" x2="182" y2="265"/>
+    <line x1="200" y1="278" x2="203" y2="258"/>
+    <line x1="220" y1="282" x2="222" y2="262"/>
+    <line x1="240" y1="276" x2="243" y2="256"/>
+    <line x1="260" y1="280" x2="262" y2="260"/>
+    <line x1="280" y1="285" x2="283" y2="265"/>
+    <line x1="300" y1="278" x2="302" y2="258"/>
+    <line x1="320" y1="282" x2="323" y2="262"/>
+    <line x1="340" y1="276" x2="342" y2="256"/>
+    <line x1="360" y1="280" x2="363" y2="260"/>
+    <line x1="380" y1="285" x2="382" y2="265"/>
+    <!-- Segunda fila -->
+    <line x1="15" y1="250" x2="17" y2="230"/>
+    <line x1="35" y1="245" x2="38" y2="225"/>
+    <line x1="55" y1="255" x2="57" y2="235"/>
+    <line x1="75" y1="248" x2="78" y2="228"/>
+    <line x1="95" y1="252" x2="97" y2="232"/>
+    <line x1="115" y1="246" x2="118" y2="226"/>
+    <line x1="135" y1="250" x2="137" y2="230"/>
+    <line x1="155" y1="255" x2="158" y2="235"/>
+    <line x1="175" y1="248" x2="177" y2="228"/>
+    <line x1="195" y1="252" x2="198" y2="232"/>
+    <line x1="215" y1="246" x2="217" y2="226"/>
+    <line x1="235" y1="250" x2="238" y2="230"/>
+    <line x1="255" y1="255" x2="257" y2="235"/>
+    <line x1="275" y1="248" x2="278" y2="228"/>
+    <line x1="295" y1="252" x2="297" y2="232"/>
+    <line x1="315" y1="246" x2="318" y2="226"/>
+    <line x1="335" y1="250" x2="337" y2="230"/>
+    <line x1="355" y1="255" x2="358" y2="235"/>
+    <line x1="375" y1="248" x2="377" y2="228"/>
+    <line x1="395" y1="252" x2="398" y2="232"/>
+  </g>
+  <!-- Flores pequeñas -->
+  <g fill="#e74c3c" stroke="#c0392b" stroke-width="0.5">
+    <circle cx="50" cy="50" r="4"/>
+    <circle cx="54" cy="48" r="3" fill="#f1c40f"/>
+    <circle cx="150" cy="80" r="4"/>
+    <circle cx="154" cy="78" r="3" fill="#f1c40f"/>
+    <circle cx="250" cy="40" r="4"/>
+    <circle cx="254" cy="38" r="3" fill="#f1c40f"/>
+    <circle cx="350" cy="70" r="4"/>
+    <circle cx="354" cy="68" r="3" fill="#f1c40f"/>
+  </g>
+  <!-- Flores azules -->
+  <g fill="#3498db" stroke="#2980b9" stroke-width="0.5">
+    <circle cx="100" cy="120" r="4"/>
+    <circle cx="104" cy="118" r="3" fill="#f1c40f"/>
+    <circle cx="300" cy="100" r="4"/>
+    <circle cx="304" cy="98" r="3" fill="#f1c40f"/>
+    <circle cx="200" cy="150" r="4"/>
+    <circle cx="204" cy="148" r="3" fill="#f1c40f"/>
+  </g>
+  <!-- Rocas pequeñas -->
+  <g fill="#7f8c8d" stroke="#555" stroke-width="1">
+    <ellipse cx="80" cy="200" rx="12" ry="8"/>
+    <ellipse cx="180" cy="220" rx="10" ry="6"/>
+    <ellipse cx="320" cy="190" rx="14" ry="9"/>
+  </g>
+  <!-- Tierra en bordes -->
+  <path d="M 0 250 Q 50 245 100 250 Q 150 255 200 250 Q 250 245 300 250 Q 350 255 400 250 L 400 300 L 0 300 Z" fill="#5d4037" opacity="0.4"/>
+</svg>

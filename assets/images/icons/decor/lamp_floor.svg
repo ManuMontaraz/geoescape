@@ -1,22 +1,148 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 64 64"
+   width="64"
+   height="64"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="lamp_floor.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     id="namedview8"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="4.5022815"
+     inkscape:cx="-9.8838778"
+     inkscape:cy="31.42851"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1592"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer11" />
   <!-- Sombra -->
-  <ellipse cx="34" cy="62" rx="14" ry="2" fill="#000" opacity="0.15"/>
   <!-- Base pesada -->
-  <ellipse cx="32" cy="58" rx="14" ry="4" fill="#7f8c8d" stroke="#333" stroke-width="1.5"/>
   <!-- Detalle base -->
-  <ellipse cx="32" cy="58" rx="10" ry="2" fill="#95a5a6" stroke="#7f8c8d" stroke-width="0.5"/>
   <!-- Poste principal -->
-  <rect x="30" y="20" width="4" height="38" rx="1" fill="#95a5a6" stroke="#333" stroke-width="1"/>
   <!-- Curva del poste -->
-  <path d="M 32 20 Q 32 10 44 14" stroke="#95a5a6" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <path d="M 32 20 Q 32 10 44 14" stroke="#333" stroke-width="1" fill="none"/>
   <!-- Pantalla -->
-  <path d="M 38 6 L 46 16 L 54 16 L 50 6 Z" fill="#f5deb3" stroke="#d4a373" stroke-width="1.5"/>
   <!-- Interior pantalla -->
-  <path d="M 40 8 L 45 14 L 51 14 L 48 8 Z" fill="#fff" stroke="#d4a373" stroke-width="0.5"/>
   <!-- Brillo -->
-  <path d="M 42 10 L 44 12 L 46 12 L 44 10 Z" fill="#fff" opacity="0.6"/>
   <!-- Cable base -->
-  <path d="M 46 58 Q 52 56 54 52" stroke="#333" stroke-width="1" fill="none"/>
+  <g
+     inkscape:groupmode="layer"
+     id="layer10"
+     inkscape:label="Layer 1"
+     style="display:none">
+    <ellipse
+       cx="34"
+       cy="62"
+       rx="14"
+       ry="2"
+       fill="#000000"
+       opacity="0.15"
+       id="ellipse1" />
+    <ellipse
+       cx="32"
+       cy="58"
+       rx="14"
+       ry="4"
+       fill="#7f8c8d"
+       stroke="#333333"
+       stroke-width="1.5"
+       id="ellipse2" />
+    <ellipse
+       cx="32"
+       cy="58"
+       rx="10"
+       ry="2"
+       fill="#95a5a6"
+       stroke="#7f8c8d"
+       stroke-width="0.5"
+       id="ellipse3" />
+    <rect
+       x="30"
+       y="20"
+       width="4"
+       height="38"
+       rx="1"
+       fill="#95a5a6"
+       stroke="#333333"
+       stroke-width="1"
+       id="rect3" />
+    <path
+       d="M 32,20 Q 32,10 44,14"
+       stroke="#95a5a6"
+       stroke-width="4"
+       fill="none"
+       stroke-linecap="round"
+       id="path3" />
+    <path
+       d="M 32,20 Q 32,10 44,14"
+       stroke="#333333"
+       stroke-width="1"
+       fill="none"
+       id="path4" />
+    <path
+       d="m 38,6 8,10 h 8 L 50,6 Z"
+       fill="#f5deb3"
+       stroke="#d4a373"
+       stroke-width="1.5"
+       id="path5" />
+    <path
+       d="m 40,8 5,6 h 6 L 48,8 Z"
+       fill="#ffffff"
+       stroke="#d4a373"
+       stroke-width="0.5"
+       id="path6" />
+    <path
+       d="m 42,10 2,2 h 2 l -2,-2 z"
+       fill="#ffffff"
+       opacity="0.6"
+       id="path7" />
+    <path
+       d="m 46,58 q 6,-2 8,-6"
+       stroke="#333333"
+       stroke-width="1"
+       fill="none"
+       id="path8"
+       style="display:inline" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer11"
+     inkscape:label="Layer 2">
+    <ellipse
+       style="fill:#636363;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path9"
+       ry="4.6331286"
+       rx="14.13497"
+       cy="58.031902"
+       cx="31.882208" />
+    <rect
+       style="display:inline;fill:#636363;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="rect8"
+       width="2.2773018"
+       height="46.802452"
+       x="30.679447"
+       y="11.246321"
+       ry="1.1386509"
+       rx="1.1386509" />
+    <path
+       style="fill:#d4a373;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;paint-order:stroke fill markers"
+       d="M 42.99632,19.003681 38.206136,1.806135 c -3.761325,0.3311985 -7.658083,0.5946804 -13.271166,0 l -3.923449,17.152681 c 7.383197,2.926285 14.706252,2.665012 21.984799,0.04487 z"
+       id="path10"
+       sodipodi:nodetypes="ccccc" />
+  </g>
 </svg>

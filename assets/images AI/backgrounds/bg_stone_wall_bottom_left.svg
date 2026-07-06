@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <!-- Suelo de piedra (resto) -->
+  <rect x="120" y="0" width="280" height="210" fill="#7f8c8d"/>
+  <!-- Losetas suelo -->
+  <g stroke="#555" stroke-width="2" fill="#95a5a6">
+    <polygon points="120,0 200,5 210,70 130,75" fill="#95a5a6" stroke="#555"/>
+    <polygon points="200,5 300,0 310,65 210,70" fill="#7f8c8d" stroke="#555"/>
+    <polygon points="300,0 400,0 400,65 310,65" fill="#95a5a6" stroke="#555"/>
+    <polygon points="120,75 130,75 140,140 120,140" fill="#7f8c8d" stroke="#555"/>
+    <polygon points="140,75 210,70 220,135 150,140" fill="#95a5a6" stroke="#555"/>
+    <polygon points="210,70 310,65 320,130 220,135" fill="#7f8c8d" stroke="#555"/>
+    <polygon points="310,65 400,65 400,130 320,130" fill="#95a5a6" stroke="#555"/>
+    <polygon points="120,140 150,140 160,210 130,210" fill="#95a5a6" stroke="#555"/>
+    <polygon points="150,140 220,135 230,205 160,210" fill="#7f8c8d" stroke="#555"/>
+    <polygon points="220,135 320,130 330,200 230,205" fill="#95a5a6" stroke="#555"/>
+    <polygon points="320,130 400,130 400,200 330,200" fill="#7f8c8d" stroke="#555"/>
+  </g>
+  <!-- Grietas -->
+  <path d="M 160 40 L 165 55 L 162 70" stroke="#444" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M 250 100 L 255 115 L 252 130" stroke="#444" stroke-width="1" fill="none" opacity="0.5"/>
+
+  <!-- Pared vertical izquierda (120x300) -->
+  <rect x="0" y="0" width="120" height="300" fill="#5d4037"/>
+  <g stroke="#3e2723" stroke-width="2">
+    <rect x="0" y="0" width="60" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="60" y="0" width="60" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="40" width="40" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="40" y="40" width="50" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="90" y="40" width="30" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="80" width="55" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="55" y="80" width="65" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="120" width="60" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="60" y="120" width="60" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="0" y="160" width="50" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="50" y="160" width="70" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="200" width="65" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="65" y="200" width="55" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="0" y="240" width="45" height="40" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="45" y="240" width="75" height="40" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="280" width="60" height="20" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="60" y="280" width="60" height="20" fill="#7f8c8d" stroke="#3e2723"/>
+  </g>
+  <!-- Musgo -->
+  <ellipse cx="20" cy="280" rx="15" ry="10" fill="#27ae60" opacity="0.3"/>
+
+  <!-- Pared horizontal abajo (400x90) -->
+  <rect x="0" y="210" width="400" height="90" fill="#5d4037"/>
+  <g stroke="#3e2723" stroke-width="2">
+    <rect x="0" y="210" width="80" height="30" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="80" y="210" width="100" height="30" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="180" y="210" width="90" height="30" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="270" y="210" width="130" height="30" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="0" y="240" width="100" height="30" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="100" y="240" width="80" height="30" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="180" y="240" width="100" height="30" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="280" y="240" width="120" height="30" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="0" y="270" width="90" height="30" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="90" y="270" width="110" height="30" fill="#95a5a6" stroke="#3e2723"/>
+    <rect x="200" y="270" width="100" height="30" fill="#7f8c8d" stroke="#3e2723"/>
+    <rect x="300" y="270" width="100" height="30" fill="#95a5a6" stroke="#3e2723"/>
+  </g>
+
+  <line x1="120" y1="0" x2="120" y2="210" stroke="#222" stroke-width="3"/>
+  <line x1="0" y1="210" x2="400" y2="210" stroke="#222" stroke-width="3"/>
+</svg>

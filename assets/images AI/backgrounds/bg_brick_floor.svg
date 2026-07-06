@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <!-- Fondo base -->
+  <rect x="0" y="0" width="400" height="300" fill="#8d6e63"/>
+  <!-- Ladrillos horizontales -->
+  <g stroke="#5d4037" stroke-width="2" fill="#a1887f">
+    <!-- Fila 1 -->
+    <rect x="0" y="0" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="60" y="0" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="120" y="0" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="180" y="0" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="240" y="0" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="300" y="0" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="360" y="0" width="40" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <!-- Fila 2 (offset) -->
+    <rect x="-30" y="30" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="30" y="30" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="90" y="30" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="150" y="30" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="210" y="30" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="270" y="30" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="330" y="30" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="390" y="30" width="10" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <!-- Fila 3 -->
+    <rect x="0" y="60" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="60" y="60" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="120" y="60" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="180" y="60" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="240" y="60" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="300" y="60" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="360" y="60" width="40" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <!-- Fila 4 (offset) -->
+    <rect x="-30" y="90" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="30" y="90" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="90" y="90" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="150" y="90" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="210" y="90" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="270" y="90" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="330" y="90" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="390" y="90" width="10" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <!-- Fila 5 -->
+    <rect x="0" y="120" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="60" y="120" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="120" y="120" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="180" y="120" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="240" y="120" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="300" y="120" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="360" y="120" width="40" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <!-- Fila 6 (offset) -->
+    <rect x="-30" y="150" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="30" y="150" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="90" y="150" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="150" y="150" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="210" y="150" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="270" y="150" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="330" y="150" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="390" y="150" width="10" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <!-- Fila 7 -->
+    <rect x="0" y="180" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="60" y="180" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="120" y="180" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="180" y="180" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="240" y="180" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="300" y="180" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="360" y="180" width="40" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <!-- Fila 8 (offset) -->
+    <rect x="-30" y="210" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="30" y="210" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="90" y="210" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="150" y="210" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="210" y="210" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="270" y="210" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="330" y="210" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="390" y="210" width="10" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <!-- Fila 9 -->
+    <rect x="0" y="240" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="60" y="240" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="120" y="240" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="180" y="240" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="240" y="240" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="300" y="240" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="360" y="240" width="40" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <!-- Fila 10 (offset) -->
+    <rect x="-30" y="270" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="30" y="270" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="90" y="270" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="150" y="270" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="210" y="270" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="270" y="270" width="60" height="30" fill="#a1887f" stroke="#5d4037"/>
+    <rect x="330" y="270" width="60" height="30" fill="#8d6e63" stroke="#5d4037"/>
+    <rect x="390" y="270" width="10" height="30" fill="#a1887f" stroke="#5d4037"/>
+  </g>
+  <!-- Detalle textura ladrillos (líneas horizontales) -->
+  <g stroke="#8d6e63" stroke-width="1" opacity="0.3">
+    <line x1="0" y1="15" x2="400" y2="15"/>
+    <line x1="0" y1="45" x2="400" y2="45"/>
+    <line x1="0" y1="75" x2="400" y2="75"/>
+    <line x1="0" y1="105" x2="400" y2="105"/>
+    <line x1="0" y1="135" x2="400" y2="135"/>
+    <line x1="0" y1="165" x2="400" y2="165"/>
+    <line x1="0" y1="195" x2="400" y2="195"/>
+    <line x1="0" y1="225" x2="400" y2="225"/>
+    <line x1="0" y1="255" x2="400" y2="255"/>
+    <line x1="0" y1="285" x2="400" y2="285"/>
+  </g>
+</svg>

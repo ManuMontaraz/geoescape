@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <!-- Fondo base tierra -->
+  <rect x="0" y="0" width="400" height="300" fill="#5d4037"/>
+  <!-- Roca base -->
+  <rect x="0" y="0" width="400" height="300" fill="#795548"/>
+  <!-- Formaciones rocosas irregulares -->
+  <g stroke="#3e2723" stroke-width="2">
+    <!-- Pared izquierda -->
+    <polygon points="0,0 80,20 70,100 90,180 60,250 85,300 0,300" fill="#6d4c41" stroke="#3e2723"/>
+    <!-- Pared derecha -->
+    <polygon points="400,0 320,30 330,110 310,190 340,260 315,300 400,300" fill="#6d4c41" stroke="#3e2723"/>
+    <!-- Techo/estalactitas -->
+    <polygon points="0,0 50,0 60,40 80,20 100,50 120,10 150,0" fill="#5d4037" stroke="#3e2723"/>
+    <polygon points="150,0 180,30 200,10 220,40 250,0" fill="#6d4c41" stroke="#3e2723"/>
+    <polygon points="250,0 280,20 300,50 320,10 350,0" fill="#5d4037" stroke="#3e2723"/>
+    <polygon points="350,0 370,30 400,0" fill="#6d4c41" stroke="#3e2723"/>
+    <!-- Suelo irregular -->
+    <polygon points="0,300 40,270 80,290 120,260 160,280 200,250 240,270 280,240 320,260 360,230 400,250 400,300" fill="#4e342e" stroke="#3e2723"/>
+  </g>
+  <!-- Estalactitas del techo -->
+  <g fill="#5d4037" stroke="#3e2723" stroke-width="1">
+    <polygon points="60,40 65,80 55,80"/>
+    <polygon points="100,50 105,90 95,90"/>
+    <polygon points="180,30 185,70 175,70"/>
+    <polygon points="220,40 225,85 215,85"/>
+    <polygon points="300,50 305,95 295,95"/>
+    <polygon points="370,30 375,75 365,75"/>
+  </g>
+  <!-- Cristales/minerales en paredes -->
+  <g fill="#3498db" opacity="0.5" stroke="#2980b9" stroke-width="0.5">
+    <polygon points="70,100 75,110 65,110"/>
+    <polygon points="330,110 335,120 325,120"/>
+    <polygon points="85,180 90,190 80,190"/>
+    <polygon points="310,190 315,200 305,200"/>
+  </g>
+  <!-- Grietas en roca -->
+  <g stroke="#3e2723" stroke-width="1" fill="none" opacity="0.6">
+    <path d="M 120 150 L 130 170 L 125 190"/>
+    <path d="M 280 140 L 270 160 L 275 180"/>
+    <path d="M 200 100 L 210 120 L 205 140"/>
+  </g>
+  <!-- Sombra/atmosfera oscura -->
+  <ellipse cx="200" cy="150" rx="100" ry="80" fill="#000" opacity="0.15"/>
+</svg>

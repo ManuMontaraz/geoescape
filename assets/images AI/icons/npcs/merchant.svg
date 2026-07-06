@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Pelo largo gris -->
+  <path d="M 20 20 Q 20 5 32 5 Q 44 5 44 20 Q 46 35 42 40 Q 38 35 36 30 L 36 20 L 28 20 L 28 30 Q 26 35 22 40 Q 18 35 20 20" fill="#7f8c8d" stroke="#333" stroke-width="1.2"/>
+  <!-- Cabeza -->
+  <ellipse cx="32" cy="22" rx="10" ry="11" fill="#f5cda0" stroke="#333" stroke-width="1.5"/>
+  <!-- Ojos -->
+  <circle cx="28" cy="20" r="1.8" fill="#333"/>
+  <circle cx="36" cy="20" r="1.8" fill="#333"/>
+  <!-- Barba -->
+  <path d="M 25 28 Q 32 38 39 28" fill="#7f8c8d" stroke="#333" stroke-width="1"/>
+  <!-- Boca -->
+  <path d="M 28 26 Q 32 29 36 26" stroke="#333" stroke-width="1.2" fill="none"/>
+  <!-- Túnica morada -->
+  <rect x="20" y="32" width="24" height="22" rx="6" fill="#8e44ad" stroke="#333" stroke-width="1.5"/>
+  <!-- Cinturón dorado -->
+  <rect x="20" y="42" width="24" height="4" fill="#f1c40f" stroke="#d4ac0d" stroke-width="1"/>
+  <!-- Bolsa/monedero -->
+  <circle cx="46" cy="44" r="5" fill="#f1c40f" stroke="#d4ac0d" stroke-width="1"/>
+  <path d="M 44 42 Q 46 40 48 42" stroke="#333" stroke-width="1" fill="none"/>
+  <!-- Piernas -->
+  <rect x="22" y="50" width="8" height="10" rx="3" fill="#5d4037" stroke="#333" stroke-width="1.5"/>
+  <rect x="34" y="50" width="8" height="10" rx="3" fill="#5d4037" stroke="#333" stroke-width="1.5"/>
+</svg>

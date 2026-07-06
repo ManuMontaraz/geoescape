@@ -105,10 +105,21 @@ class GameEngine {
 
   resize() {
     const container = document.getElementById('game-main-area');
-    const w = container ? container.clientWidth : window.innerWidth;
-    const h = container ? container.clientHeight : window.innerHeight;
+    const maxW = container ? container.clientWidth : window.innerWidth;
+    const maxH = container ? container.clientHeight : window.innerHeight;
+
+    // Maintain the same 4:3 aspect ratio as the scene editor (400x300)
+    let w = maxW;
+    let h = Math.round((w * 3) / 4);
+    if (h > maxH) {
+      h = maxH;
+      w = Math.round((h * 4) / 3);
+    }
+
     this.canvas.width = w;
     this.canvas.height = h;
+    this.canvas.style.width = w + 'px';
+    this.canvas.style.height = h + 'px';
     if (this.location) this.render();
   }
 
@@ -548,18 +559,19 @@ class GameEngine {
     ctx.translate(offsetX, offsetY);
     ctx.scale(scale, scale);
 
-    // Draw clickable areas debug/hints
-    if (this.location.clickable_areas) {
-      for (const area of this.location.clickable_areas) {
-        this.drawArea(ctx, area);
-      }
-    }
-
-    // Draw NPC instances
-    if (this.location.npc_instances) {
-      for (const inst of this.location.npc_instances) {
-        const globalNpc = this.npcManager.getGlobalNpc(inst.ref);
-        if (globalNpc) this.drawNPC(ctx, inst, globalNpc);
+    // Combine clickable areas and NPCs and draw by z_index (lower first)
+    const areas = this.location.clickable_areas || [];
+    const npcs = this.location.npc_instances || [];
+    const renderList = [
+      ...areas.map(a => ({ type: 'area', obj: a })),
+      ...npcs.map(n => ({ type: 'npc', obj: n, globalNpc: this.npcManager.getGlobalNpc(n.ref) }))
+    ];
+    renderList.sort((a, b) => (a.obj.z_index || 0) - (b.obj.z_index || 0));
+    for (const item of renderList) {
+      if (item.type === 'area') {
+        this.drawArea(ctx, item.obj);
+      } else if (item.globalNpc) {
+        this.drawNPC(ctx, item.obj, item.globalNpc);
       }
     }
 
@@ -597,12 +609,6 @@ class GameEngine {
       const cy = c.y + (c.r ? 0 : c.h/2);
       const r = c.r || Math.min(c.w, c.h)/2;
 
-      // Glow
-      ctx.beginPath();
-      ctx.arc(cx, cy, r + 4, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(241, 196, 15, 0.3)';
-      ctx.fill();
-
       // Dibujar icono SVG del item
       this._drawItemIcon(ctx, item.icon, cx, cy, r * 2);
       return;
@@ -613,6 +619,7 @@ class GameEngine {
       const cy = c.y + (c.r ? 0 : c.h/2);
       const w = c.r ? c.r * 2 : c.w;
       const h = c.r ? c.r * 2 : c.h;
+
       this._drawDecorIcon(ctx, area.icon, cx, cy, w, h);
       return;
     }
@@ -770,31 +777,49 @@ class GameEngine {
     const x = (e.clientX - rect.left - offsetX) / scale;
     const y = (e.clientY - rect.top - offsetY) / scale;
 
-    // Check NPC instances first
-    if (this.location.npc_instances) {
-      for (const inst of this.location.npc_instances) {
-        if (this.hitTestNPC(inst, x, y)) {
-          const globalNpc = this.npcManager.getGlobalNpc(inst.ref);
-          if (inst.on_click) {
-            this._handleConditionalBlock(inst.on_click);
-          } else if (globalNpc && globalNpc.on_interact) {
-            this._handleConditionalBlock(globalNpc.on_interact);
-          }
-          this._autoSave();
-          return;
-        }
-      }
-    }
+    // Combine NPCs and areas, ordered by z_index descending (top first)
+    const npcs = this.location.npc_instances || [];
+    const areas = this.location.clickable_areas || [];
+    const hitList = [
+      ...npcs.map(n => ({ type: 'npc', obj: n, globalNpc: this.npcManager.getGlobalNpc(n.ref) })),
+      ...areas.map(a => ({ type: 'area', obj: a }))
+    ];
+    hitList.sort((a, b) => (b.obj.z_index || 0) - (a.obj.z_index || 0));
 
-    // Check clickable areas
-    if (this.location.clickable_areas) {
-      for (const area of this.location.clickable_areas) {
-        if (this.hitTest(area, x, y)) {
-          this.handleAreaClick(area);
-          return;
+    for (const item of hitList) {
+      if (item.type === 'npc') {
+        const inst = item.obj;
+        if (!this.hitTestNPC(inst, x, y)) continue;
+        const globalNpc = item.globalNpc;
+        // Click-through if this NPC has no actions
+        if (!this._npcHasActions(inst, globalNpc)) continue;
+        if (inst.on_click) {
+          this._handleConditionalBlock(inst.on_click);
+        } else if (globalNpc && globalNpc.on_interact) {
+          this._handleConditionalBlock(globalNpc.on_interact);
         }
+        this._autoSave();
+        return;
+      } else {
+        const area = item.obj;
+        if (!this.hitTest(area, x, y)) continue;
+        // Click-through if this area has no actions
+        if (!this._areaHasActions(area)) continue;
+        this.handleAreaClick(area);
+        return;
       }
     }
+  }
+
+  _npcHasActions(inst, globalNpc) {
+    return !!(inst.on_click || (globalNpc && globalNpc.on_interact));
+  }
+
+  _areaHasActions(area) {
+    if (area.object_on_ground) return true;
+    if (area.on_click) return true;
+    if (area.interactions && area.interactions.length > 0) return true;
+    return false;
   }
 
   hitTest(area, x, y) {
@@ -808,10 +833,13 @@ class GameEngine {
   }
 
   hitTestNPC(inst, x, y) {
-    const p = inst.position || {x:0,y:0};
+    const p = inst.position || {x:0, y:0};
+    const npcScale = inst.scale || 1.0;
+    // Hit-test matches the full visual area of the NPC
+    const hitRadius = (30 * npcScale) / 2;
     const dx = x - p.x;
     const dy = y - p.y;
-    return (dx*dx + dy*dy) <= 20*20;
+    return (dx*dx + dy*dy) <= hitRadius*hitRadius;
   }
 
   _evaluateSingleCondition(cond) {

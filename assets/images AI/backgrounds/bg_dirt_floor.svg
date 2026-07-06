@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <!-- Tierra base -->
+  <rect x="0" y="0" width="400" height="300" fill="#8d6e63"/>
+  <!-- Variación tierra -->
+  <g fill="#795548" opacity="0.3">
+    <ellipse cx="50" cy="50" rx="40" ry="30"/>
+    <ellipse cx="200" cy="100" rx="60" ry="40"/>
+    <ellipse cx="350" cy="80" rx="50" ry="35"/>
+    <ellipse cx="80" cy="200" rx="55" ry="45"/>
+    <ellipse cx="280" cy="220" rx="70" ry="50"/>
+    <ellipse cx="150" cy="250" rx="45" ry="30"/>
+  </g>
+  <!-- Piedras en el camino -->
+  <g fill="#5d4037" stroke="#3e2723" stroke-width="0.5">
+    <ellipse cx="30" cy="30" rx="8" ry="5"/>
+    <ellipse cx="70" cy="60" rx="6" ry="4"/>
+    <ellipse cx="120" cy="40" rx="10" ry="6"/>
+    <ellipse cx="180" cy="80" rx="7" ry="4"/>
+    <ellipse cx="250" cy="50" rx="9" ry="5"/>
+    <ellipse cx="320" cy="70" rx="6" ry="4"/>
+    <ellipse cx="380" cy="40" rx="8" ry="5"/>
+    <ellipse cx="40" cy="120" rx="7" ry="5"/>
+    <ellipse cx="100" cy="150" rx="9" ry="6"/>
+    <ellipse cx="160" cy="130" rx="6" ry="4"/>
+    <ellipse cx="220" cy="160" rx="10" ry="7"/>
+    <ellipse cx="290" cy="140" rx="7" ry="5"/>
+    <ellipse cx="360" cy="170" rx="8" ry="5"/>
+    <ellipse cx="60" cy="220" rx="9" ry="6"/>
+    <ellipse cx="140" cy="200" rx="7" ry="4"/>
+    <ellipse cx="200" cy="240" rx="8" ry="5"/>
+    <ellipse cx="270" cy="260" rx="10" ry="6"/>
+    <ellipse cx="340" cy="230" rx="6" ry="4"/>
+    <ellipse cx="380" cy="280" rx="9" ry="5"/>
+    <ellipse cx="50" cy="280" rx="7" ry="5"/>
+  </g>
+  <!-- Pequeñas hierbas -->
+  <g stroke="#4e342e" stroke-width="1" fill="none">
+    <path d="M 20 280 Q 22 270 20 260"/>
+    <path d="M 25 285 Q 27 275 25 265"/>
+    <path d="M 80 290 Q 82 280 80 270"/>
+    <path d="M 180 295 Q 182 285 180 275"/>
+    <path d="M 240 285 Q 242 275 240 265"/>
+    <path d="M 300 290 Q 302 280 300 270"/>
+    <path d="M 370 280 Q 372 270 370 260"/>
+  </g>
+  <!-- Grietas tierra -->
+  <g stroke="#3e2723" stroke-width="0.8" fill="none" opacity="0.4">
+    <path d="M 150 50 L 155 70 L 152 90"/>
+    <path d="M 300 120 L 305 140 L 302 160"/>
+    <path d="M 80 180 L 85 200 L 82 220"/>
+    <path d="M 220 200 L 225 220 L 222 240"/>
+  </g>
+</svg>

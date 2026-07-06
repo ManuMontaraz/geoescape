@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Borde dentado -->
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#b7950b" stroke-width="2" stroke-dasharray="3,2"/>
+  <!-- Base de la moneda -->
+  <circle cx="32" cy="32" r="24" fill="#f1c40f" stroke="#333" stroke-width="1.5"/>
+  <!-- Anillo interior -->
+  <circle cx="32" cy="32" r="20" fill="none" stroke="#d4ac0d" stroke-width="1.2"/>
+  <!-- Círculo central claro -->
+  <circle cx="32" cy="32" r="16" fill="#f9e79f" stroke="#d4ac0d" stroke-width="1"/>
+  <!-- Símbolo $ -->
+  <text x="32" y="38" text-anchor="middle" fill="#b7950b" font-size="22" font-weight="bold" font-family="sans-serif">$</text>
+  <!-- Brillo en borde -->
+  <path d="M 20 18 Q 26 14 32 14" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <!-- Sombra inferior -->
+  <ellipse cx="34" cy="56" rx="14" ry="3" fill="#000" opacity="0.15"/>
+</svg>

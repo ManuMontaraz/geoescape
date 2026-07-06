@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Sombra -->
+  <ellipse cx="34" cy="60" rx="16" ry="2" fill="#000" opacity="0.15"/>
+  <!-- Marco exterior -->
+  <rect x="12" y="8" width="40" height="48" rx="2" fill="#5d4037" stroke="#333" stroke-width="1.5"/>
+  <!-- Alféizar -->
+  <rect x="10" y="52" width="44" height="6" rx="1" fill="#8d6e63" stroke="#333" stroke-width="1"/>
+  <!-- Cristal -->
+  <rect x="18" y="14" width="28" height="32" fill="#85c1e9" stroke="#2980b9" stroke-width="1" opacity="0.7"/>
+  <!-- Cruz del cristal -->
+  <line x1="32" y1="14" x2="32" y2="46" stroke="#2980b9" stroke-width="1.5"/>
+  <line x1="18" y1="30" x2="46" y2="30" stroke="#2980b9" stroke-width="1.5"/>
+  <!-- Marco interior -->
+  <rect x="16" y="12" width="32" height="36" rx="1" fill="none" stroke="#3e2723" stroke-width="1"/>
+  <!-- Brillo cristal -->
+  <path d="M 20 18 L 24 22" stroke="#fff" stroke-width="1.5" opacity="0.6"/>
+  <path d="M 22 16 L 26 20" stroke="#fff" stroke-width="1" opacity="0.4"/>
+</svg>

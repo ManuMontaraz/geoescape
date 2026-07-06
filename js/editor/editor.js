@@ -1368,20 +1368,21 @@ class CampaignEditor {
       }
     }
 
-    // Zones
+    // Combine zones and NPCs and draw by z_index (lower first)
     const areas = loc.clickable_areas || [];
-    for (let i = 0; i < areas.length; i++) {
-      const a = areas[i];
-      const selected = this._selectedSceneElement && this._selectedSceneElement.type === 'area' && this._selectedSceneElement.index === i;
-      this._drawAreaOnCanvas(ctx, a, selected);
-    }
-
-    // NPC instances
     const npcs = loc.npc_instances || [];
-    for (let i = 0; i < npcs.length; i++) {
-      const inst = npcs[i];
-      const selected = this._selectedSceneElement && this._selectedSceneElement.type === 'npc' && this._selectedSceneElement.index === i;
-      this._drawNpcOnCanvas(ctx, inst, selected);
+    const renderList = [
+      ...areas.map((a, i) => ({ type: 'area', index: i, obj: a })),
+      ...npcs.map((n, i) => ({ type: 'npc', index: i, obj: n }))
+    ];
+    renderList.sort((a, b) => (a.obj.z_index || 0) - (b.obj.z_index || 0));
+    for (const item of renderList) {
+      const selected = this._selectedSceneElement && this._selectedSceneElement.type === item.type && this._selectedSceneElement.index === item.index;
+      if (item.type === 'area') {
+        this._drawAreaOnCanvas(ctx, item.obj, selected);
+      } else {
+        this._drawNpcOnCanvas(ctx, item.obj, selected);
+      }
     }
   }
 
@@ -1394,6 +1395,21 @@ class CampaignEditor {
       const cx = isCircle ? c.x : c.x + c.w / 2;
       const cy = isCircle ? c.y : c.y + c.h / 2;
       this._drawItemIconOnCanvas(ctx, area.object_on_ground, cx, cy, r * 2);
+      // Debug: show full clickable area
+      ctx.save();
+      ctx.strokeStyle = 'rgba(241, 196, 15, 0.9)';
+      ctx.fillStyle = 'rgba(241, 196, 15, 0.15)';
+      ctx.lineWidth = 2;
+      if (isCircle) {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      } else {
+        ctx.fillRect(c.x, c.y, c.w, c.h);
+        ctx.strokeRect(c.x, c.y, c.w, c.h);
+      }
+      ctx.restore();
       if (selected) {
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
@@ -1417,6 +1433,21 @@ class CampaignEditor {
       const w = isCircle ? r * 2 : c.w;
       const h = isCircle ? r * 2 : c.h;
       this._drawDecorIconOnCanvas(ctx, area.icon, cx, cy, w, h);
+      // Debug: show full clickable area
+      ctx.save();
+      ctx.strokeStyle = 'rgba(233, 69, 96, 0.9)';
+      ctx.fillStyle = 'rgba(233, 69, 96, 0.2)';
+      ctx.lineWidth = 2;
+      if (isCircle) {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      } else {
+        ctx.fillRect(c.x, c.y, c.w, c.h);
+        ctx.strokeRect(c.x, c.y, c.w, c.h);
+      }
+      ctx.restore();
       if (selected) {
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
@@ -1605,6 +1636,17 @@ class CampaignEditor {
     // Draw NPC sprite
     this._drawNpcIconOnCanvas(ctx, iconName, p.x, p.y, size);
 
+    // Debug: show full clickable area
+    ctx.save();
+    ctx.strokeStyle = 'rgba(52, 152, 219, 0.9)';
+    ctx.fillStyle = 'rgba(52, 152, 219, 0.2)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, size / 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
     // Draw selection highlight
     if (selected) {
       ctx.strokeStyle = '#fff';
@@ -1633,29 +1675,34 @@ class CampaignEditor {
     const loc = this.campaign.locations.find(l => l.id === this.selectedLocId);
     if (!loc) return null;
 
-    // Test NPCs first (smaller, on top)
+    // Combine NPCs and areas and test by z_index (higher first)
     const npcs = loc.npc_instances || [];
-    for (let i = npcs.length - 1; i >= 0; i--) {
-      const inst = npcs[i];
-      const p = inst.position || { x: 0, y: 0 };
-      const npcScale = inst.scale || 1.0;
-      const hitRadius = 20 * npcScale;
-      const dx = cx - p.x;
-      const dy = cy - p.y;
-      if (dx * dx + dy * dy <= hitRadius * hitRadius) return { type: 'npc', index: i };
-    }
-
-    // Test areas
     const areas = loc.clickable_areas || [];
-    for (let i = areas.length - 1; i >= 0; i--) {
-      const area = areas[i];
-      const c = area.coords;
-      if (area.shape === 'circle') {
-        const dx = cx - c.x;
-        const dy = cy - c.y;
-        if (dx * dx + dy * dy <= c.r * c.r) return { type: 'area', index: i };
+    const hitList = [
+      ...npcs.map((n, i) => ({ type: 'npc', index: i, obj: n })),
+      ...areas.map((a, i) => ({ type: 'area', index: i, obj: a }))
+    ];
+    hitList.sort((a, b) => (b.obj.z_index || 0) - (a.obj.z_index || 0));
+
+    for (const item of hitList) {
+      if (item.type === 'npc') {
+        const inst = item.obj;
+        const p = inst.position || { x: 0, y: 0 };
+        const npcScale = inst.scale || 1.0;
+        const hitRadius = (30 * npcScale) / 2;
+        const dx = cx - p.x;
+        const dy = cy - p.y;
+        if (dx * dx + dy * dy <= hitRadius * hitRadius) return { type: 'npc', index: item.index };
       } else {
-        if (cx >= c.x && cx <= c.x + c.w && cy >= c.y && cy <= c.y + c.h) return { type: 'area', index: i };
+        const area = item.obj;
+        const c = area.coords;
+        if (area.shape === 'circle') {
+          const dx = cx - c.x;
+          const dy = cy - c.y;
+          if (dx * dx + dy * dy <= c.r * c.r) return { type: 'area', index: item.index };
+        } else {
+          if (cx >= c.x && cx <= c.x + c.w && cy >= c.y && cy <= c.y + c.h) return { type: 'area', index: item.index };
+        }
       }
     }
 
@@ -1729,7 +1776,21 @@ class CampaignEditor {
     if (hit) {
       this._selectedSceneElement = hit;
       this._mode = 'drag';
-      this._dragStart = { cx, cy, sx: cx, sy: cy };
+      let offsetX = 0, offsetY = 0;
+      if (hit.type === 'area' && loc) {
+        const area = loc.clickable_areas[hit.index];
+        if (area) {
+          offsetX = cx - area.coords.x;
+          offsetY = cy - area.coords.y;
+        }
+      } else if (hit.type === 'npc' && loc) {
+        const inst = loc.npc_instances[hit.index];
+        if (inst) {
+          offsetX = cx - inst.position.x;
+          offsetY = cy - inst.position.y;
+        }
+      }
+      this._dragStart = { cx, cy, offsetX, offsetY };
       this._drawScene();
       this._renderSceneProperties();
     } else {
@@ -1753,24 +1814,21 @@ class CampaignEditor {
     const el = this._selectedSceneElement;
 
     if (this._mode === 'drag') {
-      const sdx = cx - this._dragStart.sx;
-      const sdy = cy - this._dragStart.sy;
-
       if (el.type === 'area') {
         const area = loc.clickable_areas[el.index];
         if (!area) { this._selectedSceneElement = null; return; }
         if (area.shape === 'rect') {
-          area.coords.x = Math.round(this._dragStart.sx + sdx - area.coords.w / 2);
-          area.coords.y = Math.round(this._dragStart.sy + sdy - area.coords.h / 2);
+          area.coords.x = Math.round(cx - this._dragStart.offsetX);
+          area.coords.y = Math.round(cy - this._dragStart.offsetY);
         } else {
-          area.coords.x = Math.round(this._dragStart.sx + sdx);
-          area.coords.y = Math.round(this._dragStart.sy + sdy);
+          area.coords.x = Math.round(cx - this._dragStart.offsetX);
+          area.coords.y = Math.round(cy - this._dragStart.offsetY);
         }
       } else if (el.type === 'npc') {
         const inst = loc.npc_instances[el.index];
         if (!inst) { this._selectedSceneElement = null; return; }
-        inst.position.x = Math.round(this._dragStart.sx + sdx);
-        inst.position.y = Math.round(this._dragStart.sy + sdy);
+        inst.position.x = Math.round(cx - this._dragStart.offsetX);
+        inst.position.y = Math.round(cy - this._dragStart.offsetY);
       }
       this._drawScene();
       this._updateScenePropertyInputs();
@@ -1823,6 +1881,7 @@ class CampaignEditor {
       const cw = document.getElementById('prop_w');
       const ch = document.getElementById('prop_h');
       const cr = document.getElementById('prop_r');
+      const cz = document.getElementById('prop_z');
       if (cx) cx.value = area.coords.x;
       if (cy) cy.value = area.coords.y;
       if (area.shape === 'rect') {
@@ -1831,12 +1890,15 @@ class CampaignEditor {
       } else {
         if (cr) cr.value = area.coords.r;
       }
+      if (cz) cz.value = area.z_index || 0;
     } else if (el.type === 'npc') {
       const inst = loc.npc_instances[el.index];
       const cx = document.getElementById('prop_npx');
       const cy = document.getElementById('prop_npy');
+      const cz = document.getElementById('prop_npz');
       if (cx) cx.value = inst.position.x;
       if (cy) cy.value = inst.position.y;
+      if (cz) cz.value = inst.z_index || 0;
     }
   }
 
@@ -1870,6 +1932,7 @@ class CampaignEditor {
           ? `<div class="editor-group"><label>Radio</label><input type="number" id="prop_r" value="${area.coords.r}" onchange="editor.updateSceneFromProps()"></div>`
           : `<div style="display:flex;gap:0.5rem;"><div class="editor-group" style="flex:1;"><label>Ancho</label><input type="number" id="prop_w" value="${area.coords.w}" onchange="editor.updateSceneFromProps()"></div><div class="editor-group" style="flex:1;"><label>Alto</label><input type="number" id="prop_h" value="${area.coords.h}" onchange="editor.updateSceneFromProps()"></div></div>`
         }
+        <div class="editor-group"><label>Capa (z-index)</label><input type="number" id="prop_z" value="${area.z_index || 0}" onchange="editor.updateSceneFromProps()"></div>
         <div class="editor-group">
           <label>Objeto en el suelo</label>
           <select id="prop_ground" onchange="editor.updateSceneFromProps()">
@@ -1913,7 +1976,10 @@ class CampaignEditor {
           <div class="editor-group" style="flex:1;"><label>X</label><input type="number" id="prop_npx" value="${inst.position.x}" onchange="editor.updateSceneFromProps()"></div>
           <div class="editor-group" style="flex:1;"><label>Y</label><input type="number" id="prop_npy" value="${inst.position.y}" onchange="editor.updateSceneFromProps()"></div>
         </div>
-        <div class="editor-group"><label>Escala</label><input type="number" id="prop_npscale" value="${inst.scale || 1.0}" step="0.1" min="0.2" max="5.0" onchange="editor.updateSceneFromProps()"></div>
+        <div style="display:flex;gap:0.5rem;">
+          <div class="editor-group" style="flex:1;"><label>Escala</label><input type="number" id="prop_npscale" value="${inst.scale || 1.0}" step="0.1" min="0.2" max="5.0" onchange="editor.updateSceneFromProps()"></div>
+          <div class="editor-group" style="flex:1;"><label>Capa (z-index)</label><input type="number" id="prop_npz" value="${inst.z_index || 0}" onchange="editor.updateSceneFromProps()"></div>
+        </div>
 
         <h5 style="color:var(--text-muted);margin:0.8rem 0 0.3rem;font-size:0.85rem;">⚡ Al hacer click (sobrescribe global)</h5>
         <div id="npc-actions-block"></div>
@@ -1951,6 +2017,8 @@ class CampaignEditor {
       }
       const decorVal = document.getElementById('prop_decor_icon')?.value;
       area.icon = decorVal || null;
+      const zEl = document.getElementById('prop_z');
+      if (zEl) area.z_index = parseInt(zEl.value) || 0;
     } else if (el.type === 'npc') {
       const inst = loc.npc_instances[el.index];
       if (!inst) { this._selectedSceneElement = null; return; }
@@ -1964,6 +2032,8 @@ class CampaignEditor {
         if (newScale > 5.0) newScale = 5.0;
         inst.scale = newScale;
       }
+      const zEl = document.getElementById('prop_npz');
+      if (zEl) inst.z_index = parseInt(zEl.value) || 0;
     }
     this._drawScene();
     this._doAutoSave();
@@ -1978,6 +2048,7 @@ class CampaignEditor {
       id: 'Zona_' + idx,
       shape: shape,
       coords: shape === 'circle' ? { x: 200, y: 150, r: 15 } : { x: 150, y: 100, w: 80, h: 60 },
+      z_index: 0,
       object_on_ground: null,
       on_click: { actions: [{ type: 'text', value: 'Has hecho click' }] }
     };
@@ -1996,7 +2067,8 @@ class CampaignEditor {
     loc.npc_instances.push({
       ref: ref,
       position: { x: 200, y: 150 },
-      scale: 1.0
+      scale: 1.0,
+      z_index: 0
     });
     this._selectedSceneElement = { type: 'npc', index: loc.npc_instances.length - 1 };
     this._drawScene();
@@ -2014,6 +2086,7 @@ class CampaignEditor {
       id: 'Item_' + (loc.clickable_areas.length + 1),
       shape: 'circle',
       coords: { x: 200, y: 150, r: 12 },
+      z_index: 0,
       object_on_ground: itemId,
       on_click: {
         actions: [

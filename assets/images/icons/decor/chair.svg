@@ -1,23 +1,117 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 64 64"
+   width="64"
+   height="64"
+   version="1.1"
+   id="svg10"
+   sodipodi:docname="chair.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     id="namedview10"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="6.3671875"
+     inkscape:cx="43.425767"
+     inkscape:cy="26.934969"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1592"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer3" />
   <!-- Sombra -->
-  <ellipse cx="34" cy="60" rx="14" ry="2" fill="#000" opacity="0.15"/>
   <!-- Patas traseras -->
-  <rect x="18" y="44" width="4" height="12" rx="1" fill="#5d4037" stroke="#333" stroke-width="1"/>
-  <rect x="42" y="44" width="4" height="12" rx="1" fill="#5d4037" stroke="#333" stroke-width="1"/>
   <!-- Patas delanteras -->
-  <rect x="14" y="46" width="4" height="12" rx="1" fill="#795548" stroke="#333" stroke-width="1"/>
-  <rect x="46" y="46" width="4" height="12" rx="1" fill="#795548" stroke="#333" stroke-width="1"/>
   <!-- Asiento -->
-  <rect x="12" y="36" width="40" height="10" rx="2" fill="#8d6e63" stroke="#333" stroke-width="1.5"/>
   <!-- Borde asiento -->
-  <rect x="14" y="38" width="36" height="6" rx="1" fill="#a1887f" stroke="#5d4037" stroke-width="0.5"/>
   <!-- Respaldo -->
-  <rect x="14" y="12" width="36" height="24" rx="3" fill="#795548" stroke="#333" stroke-width="1.5"/>
   <!-- Detalle respaldo -->
-  <rect x="18" y="16" width="28" height="16" rx="2" fill="#8d6e63" stroke="#5d4037" stroke-width="0.5"/>
   <!-- Línea decorativa respaldo -->
-  <line x1="22" y1="20" x2="42" y2="20" stroke="#5d4037" stroke-width="0.5"/>
-  <line x1="22" y1="24" x2="42" y2="24" stroke="#5d4037" stroke-width="0.5"/>
-  <line x1="22" y1="28" x2="42" y2="28" stroke="#5d4037" stroke-width="0.5"/>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Layer 2"
+     style="display:inline">
+    <rect
+       style="fill:#4d362a;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="rect10"
+       width="36.593868"
+       height="25.207359"
+       x="13.663802"
+       y="11.700616"
+       rx="0"
+       ry="1.0993865" />
+    <rect
+       style="fill:#3e2c22;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="rect11"
+       width="4.7901859"
+       height="13.035578"
+       x="41.777618"
+       y="43.076992"
+       rx="0"
+       ry="1.0993865" />
+    <rect
+       style="fill:#3e2c22;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="rect10-1"
+       width="4.7901859"
+       height="13.035578"
+       x="17.38497"
+       y="43.076992"
+       rx="0"
+       ry="1.0993865" />
+    <rect
+       style="fill:#4d362a;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="rect12"
+       width="4.7901869"
+       height="14.527604"
+       x="45.56411"
+       y="43.700306"
+       rx="0"
+       ry="1.0993865" />
+    <rect
+       style="fill:#4d362a;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="rect10-1-4"
+       width="4.7901869"
+       height="14.527604"
+       x="13.564111"
+       y="43.700306"
+       rx="0"
+       ry="1.0993865" />
+    <rect
+       style="display:inline;fill:#74452c;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect19"
+       width="41.069939"
+       height="8.7165642"
+       x="11.52362"
+       y="35.522392"
+       ry="0.78527641" />
+    <rect
+       style="fill:#61211e;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="rect13"
+       width="32.428005"
+       height="5.6979585"
+       x="15.769783"
+       y="34.337299"
+       ry="1.0993865" />
+    <rect
+       style="fill:#61211e;fill-opacity:1;stroke:#2a2a2a;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="rect14"
+       width="32.428005"
+       height="18.565208"
+       x="15.769783"
+       y="13.992904"
+       ry="1.0993865" />
+  </g>
 </svg>

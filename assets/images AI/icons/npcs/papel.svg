@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Shadow on ground -->
+  <ellipse cx="32" cy="55" rx="18" ry="4" fill="#111" opacity="0.25" stroke="none"/>
+
+  <!-- Main paper sheet (perspective, slightly tilted as if on ground) -->
+  <path d="M 18 16 L 46 12 L 50 44 L 22 48 Z" fill="#FFF8DC" stroke="#333" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- Paper fold shadow (underneath the curled corner) -->
+  <path d="M 38 44 L 50 44 L 50 32 Z" fill="#E8DCC8" stroke="none"/>
+
+  <!-- Folded corner (bottom right curled up) -->
+  <path d="M 38 44 L 50 44 L 50 32 Z" fill="#F0E6D2" stroke="#333" stroke-width="1.2" stroke-linejoin="round"/>
+  <!-- Inner fold line -->
+  <line x1="38" y1="44" x2="50" y2="32" stroke="#C4B59D" stroke-width="0.8"/>
+
+  <!-- Back of curled corner (darker) -->
+  <path d="M 50 32 L 46 40 L 42 36 Z" fill="#D4C5AD" stroke="#333" stroke-width="0.8" stroke-linejoin="round"/>
+
+  <!-- Text lines on paper -->
+  <line x1="22" y1="18" x2="42" y2="16" stroke="#666" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="22" y1="22" x2="44" y2="20" stroke="#666" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="24" y1="26" x2="38" y2="24" stroke="#666" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="24" y1="30" x2="44" y2="28" stroke="#666" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="26" y1="34" x2="40" y2="32" stroke="#666" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="26" y1="38" x2="44" y2="36" stroke="#666" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="28" y1="42" x2="36" y2="40" stroke="#666" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Paper edge highlights (subtle lines to show thickness) -->
+  <line x1="18.5" y1="16.5" x2="45.5" y2="12.5" stroke="#FFF" stroke-width="0.6" opacity="0.5" stroke-linecap="round"/>
+  <line x1="46" y1="12.5" x2="50" y2="43.5" stroke="#FFF" stroke-width="0.6" opacity="0.5" stroke-linecap="round"/>
+
+  <!-- Small stain/wrinkle detail for realism -->
+  <path d="M 30 20 Q 32 22 34 20" stroke="#D4C5AD" stroke-width="0.6" fill="none" opacity="0.6"/>
+  <path d="M 24 35 Q 26 37 28 35" stroke="#D4C5AD" stroke-width="0.6" fill="none" opacity="0.6"/>
+</svg>
